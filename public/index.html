@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GaMon — Garbage Monitoring on Web</title>
+    <link rel="stylesheet" href="assets/css/app.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <h1>GaMon</h1>
+      <p class="tagline">Garbage Monitoring on Web</p>
+    </header>
+    <main>
+      <p class="lede">
+        Reference data is loaded from the API (SQLite after
+        <code>php scripts/init-database.php</code>).
+      </p>
+
+      <section class="panel" aria-labelledby="cat-heading">
+        <h2 id="cat-heading">Waste categories</h2>
+        <ul id="category-list" class="data-list">
+          <li>Loading…</li>
+        </ul>
+      </section>
+
+      <section class="panel" aria-labelledby="hood-heading">
+        <h2 id="hood-heading">Neighborhoods</h2>
+        <ul id="neighborhood-list" class="data-list">
+          <li>Loading…</li>
+        </ul>
+      </section>
+
+      <section class="panel api-check" aria-live="polite">
+        <h2>API status</h2>
+        <pre id="api-status" class="mono">Checking…</pre>
+      </section>
+    </main>
+    <script src="assets/js/app.js" defer></script>
+  </body>
+</html>
