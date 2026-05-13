@@ -1,0 +1,85 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: #1a1a1a;
+  background: #f5f7fa;
+}
+
+.site-header {
+  padding: 1rem 1.25rem;
+  background: #0d6b4d;
+  color: #fff;
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+}
+
+.tagline {
+  margin: 0.25rem 0 0;
+  opacity: 0.95;
+  font-size: 0.95rem;
+}
+
+main {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 1.25rem;
+}
+
+.lede {
+  margin-top: 0;
+}
+
+.lede code {
+  font-size: 0.88em;
+  padding: 0.1em 0.35em;
+  background: #e8ecf1;
+  border-radius: 4px;
+}
+
+.panel {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.panel h2 {
+  margin-top: 0;
+  font-size: 1.1rem;
+}
+
+.data-list {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.data-list li {
+  margin-bottom: 0.35rem;
+}
+
+.api-check {
+  margin-top: 1.5rem;
+}
+
+.mono {
+  margin: 0;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
