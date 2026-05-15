@@ -22,5 +22,20 @@ Web application for waste collection, sorting, and recycling information, aimed 
 ### Backend
 - PHP
 
-### Database
+## Database (first run)
 - SQLite
+
+From the repository root:
+
+```bash
+php scripts/init-database.php
+```
+
+Creates `data/gamon.sqlite` (gitignored) from `sql/schema.sql` and `sql/seed.sql`.
+
+## Run locally
+
+```bash
+cd public
+php -S localhost:8080
+```
