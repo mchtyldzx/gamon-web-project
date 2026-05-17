@@ -1,89 +1,78 @@
-(function () {
-  "use strict";
+/* app.js — home page: meta + health + stats */
 
-  function setText(id, text) {
-    var el = document.getElementById(id);
-    if (el) {
-      el.textContent = text;
-    }
-  }
+function escHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = String(str ?? '');
+  return d.innerHTML;
+}
 
-  function clearList(id) {
-    var ul = document.getElementById(id);
-    if (!ul) {
-      return;
-    }
-    while (ul.firstChild) {
-      ul.removeChild(ul.firstChild);
-    }
-  }
+const CAT_ICONS = {
+  household: '🏠', paper: '📄', plastic: '♻️',
+  glass: '🍶', metal: '🔩', organic: '🌱', hazardous: '⚠️',
+};
 
-  function appendListItem(ul, text) {
-    var li = document.createElement("li");
-    li.textContent = text;
-    ul.appendChild(li);
-  }
+async function loadMeta() {
+  try {
+    const res  = await fetch('api/meta.php');
+    const data = await res.json();
 
-  fetch("api/health.php", { headers: { Accept: "application/json" } })
-    .then(function (res) {
-      if (!res.ok) {
-        throw new Error("HTTP " + res.status);
-      }
-      return res.json();
-    })
-    .then(function (data) {
-      var el = document.getElementById("api-status");
-      if (el) {
-        el.textContent = JSON.stringify(data, null, 2);
-      }
-    })
-    .catch(function (err) {
-      setText("api-status", "Error: " + err.message);
-    });
-
-  fetch("api/meta.php", { headers: { Accept: "application/json" } })
-    .then(function (res) {
-      return res.json().then(function (body) {
-        if (!res.ok) {
-          var msg = body.error || body.detail || "HTTP " + res.status;
-          var hint = body.hint ? " " + body.hint : "";
-          throw new Error(msg + hint);
-        }
-        return body;
-      });
-    })
-    .then(function (data) {
-      var catUl = document.getElementById("category-list");
-      var hoodUl = document.getElementById("neighborhood-list");
-      clearList("category-list");
-      clearList("neighborhood-list");
-      if (!catUl || !hoodUl) {
-        return;
-      }
-      if (!data.categories || !data.categories.length) {
-        appendListItem(catUl, "No categories.");
+    const catList = document.getElementById('category-list');
+    if (catList) {
+      if (!data.categories?.length) {
+        catList.innerHTML = '<li>Run: <code>php scripts/init-database.php</code></li>';
       } else {
-        data.categories.forEach(function (c) {
-          appendListItem(
-            catUl,
-            c.name + " (" + c.code + ")" + (c.description ? " — " + c.description : "")
-          );
-        });
+        catList.innerHTML = data.categories.map(c =>
+          `<li><span class="cat-icon">${CAT_ICONS[c.code] || '🗑️'}</span> ${escHtml(c.name)}</li>`
+        ).join('');
       }
-      if (!data.neighborhoods || !data.neighborhoods.length) {
-        appendListItem(hoodUl, "No neighborhoods.");
+    }
+
+    const hoodList = document.getElementById('neighborhood-list');
+    if (hoodList) {
+      if (!data.neighborhoods?.length) {
+        hoodList.innerHTML = '<li>No neighbourhoods found.</li>';
       } else {
-        data.neighborhoods.forEach(function (n) {
-          appendListItem(hoodUl, n.name + ", " + n.locality);
-        });
+        hoodList.innerHTML = data.neighborhoods.map(n =>
+          `<li>📍 ${escHtml(n.name)}, ${escHtml(n.locality)}</li>`
+        ).join('');
       }
-    })
-    .catch(function (err) {
-      clearList("category-list");
-      clearList("neighborhood-list");
-      var catUl = document.getElementById("category-list");
-      if (catUl) {
-        appendListItem(catUl, err.message);
-      }
-    });
-})();
+    }
+  } catch (e) {
+    const el = document.getElementById('category-list');
+    if (el) el.innerHTML = `<li class="alert alert-error visible" style="list-style:none">Failed to load: ${escHtml(e.message)}</li>`;
+  }
+}
+
+async function loadHealth() {
+  const el = document.getElementById('api-status');
+  if (!el) return;
+  try {
+    const res  = await fetch('api/health.php');
+    const data = await res.json();
+    el.textContent = JSON.stringify(data, null, 2);
+  } catch (e) {
+    el.textContent = 'Error: ' + e.message;
+  }
+}
+
+async function loadStats() {
+  try {
+    const res     = await fetch('api/reports.php');
+    const reports = res.ok ? await res.json() : [];
+
+    const total    = reports.length;
+    const open     = reports.filter(r => r.status === 'open').length;
+    const resolved = reports.filter(r => r.status === 'resolved').length;
+
+    const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    setEl('stat-reports',  total);
+    setEl('stat-open',     open);
+    setEl('stat-resolved', resolved);
+  } catch { /* stats are optional on home page */ }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadMeta();
+  loadHealth();
+  loadStats();
+});

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Create a GaMon account to report garbage accumulation in your area" />
+  <title>Register — GaMon</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <a class="nav-brand" href="index.html">Ga<span>Mon</span></a>
+    <ul class="nav-links" id="nav-links" role="list">
+      <li><a href="index.html">Home</a></li>
+    </ul>
+    <div class="nav-auth" id="nav-auth"></div>
+  </nav>
+
+  <main class="auth-page">
+    <div class="auth-card">
+      <h1>Create account</h1>
+      <p class="subtitle">Join GaMon and help keep your city clean</p>
+
+      <div class="alert" id="register-alert" role="alert"></div>
+
+      <form id="register-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="full_name">Full name <span class="required">*</span></label>
+          <input class="form-input" type="text" id="full_name" name="full_name"
+                 placeholder="Jane Smith" autocomplete="name" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">Email <span class="required">*</span></label>
+          <input class="form-input" type="email" id="email" name="email"
+                 placeholder="you@example.com" autocomplete="email" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password">Password <span class="required">*</span></label>
+          <input class="form-input" type="password" id="password" name="password"
+                 placeholder="Min. 6 characters" autocomplete="new-password" required />
+          <p class="form-hint">At least 6 characters.</p>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password2">Confirm password <span class="required">*</span></label>
+          <input class="form-input" type="password" id="password2" name="password2"
+                 placeholder="Repeat password" autocomplete="new-password" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="role">Role <span class="required">*</span></label>
+          <select class="form-select" id="role" name="role">
+            <option value="citizen">Citizen — report accumulation sites</option>
+            <option value="staff">Authorized staff — manage reports</option>
+            <option value="decision_maker">Decision maker — view statistics</option>
+          </select>
+          <p class="form-hint">Select the role that best describes your use of GaMon.</p>
+        </div>
+        <button class="btn btn-primary btn-full" type="submit" id="btn-register">Create account</button>
+      </form>
+
+      <p class="auth-footer">
+        Already have an account? <a href="login.html">Sign in</a>
+      </p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>GaMon &mdash; Garbage Monitoring on Web &bull; <a href="index.html">Home</a></p>
+  </footer>
+
+  <script src="assets/js/auth.js" defer></script>
+</body>
+</html>

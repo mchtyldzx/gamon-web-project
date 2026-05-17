@@ -1,41 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>GaMon — Garbage Monitoring on Web</title>
-    <link rel="stylesheet" href="assets/css/app.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <h1>GaMon</h1>
-      <p class="tagline">Garbage Monitoring on Web</p>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="GaMon — Garbage Monitoring on Web. Report waste accumulation, track collection and view reports by neighbourhood." />
+  <title>GaMon — Garbage Monitoring on Web</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <a class="nav-brand" href="index.html">Ga<span>Mon</span></a>
+    <ul class="nav-links" id="nav-links" role="list">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="report.html">Reports</a></li>
+    </ul>
+    <div class="nav-auth" id="nav-auth"></div>
+  </nav>
+
+  <main>
+    <!-- Hero -->
+    <header class="hero" role="banner">
+      <h1>Keep your city <em>clean</em></h1>
+      <p>GaMon lets citizens report garbage accumulation sites, track clean-up efforts, and explore statistics by neighbourhood.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="report.html">View Reports</a>
+        <a class="btn btn-ghost" href="register.html">Get started free</a>
+      </div>
     </header>
-    <main>
-      <p class="lede">
-        Reference data is loaded from the API (SQLite after
-        <code>php scripts/init-database.php</code>).
-      </p>
 
-      <section class="panel" aria-labelledby="cat-heading">
-        <h2 id="cat-heading">Waste categories</h2>
-        <ul id="category-list" class="data-list">
-          <li>Loading…</li>
-        </ul>
+    <div class="container">
+
+      <!-- Stats row -->
+      <section aria-labelledby="stats-heading" style="padding:2.5rem 0 1rem;">
+        <h2 id="stats-heading" class="visually-hidden">System overview</h2>
+        <div class="grid-3" id="stat-tiles">
+          <div class="stat-tile">
+            <span class="stat-value" id="stat-reports">—</span>
+            <span class="stat-label">Total reports</span>
+          </div>
+          <div class="stat-tile">
+            <span class="stat-value" id="stat-open">—</span>
+            <span class="stat-label">Open reports</span>
+          </div>
+          <div class="stat-tile">
+            <span class="stat-value" id="stat-resolved">—</span>
+            <span class="stat-label">Resolved</span>
+          </div>
+        </div>
       </section>
 
-      <section class="panel" aria-labelledby="hood-heading">
-        <h2 id="hood-heading">Neighborhoods</h2>
-        <ul id="neighborhood-list" class="data-list">
-          <li>Loading…</li>
-        </ul>
+      <!-- Reference data -->
+      <section style="padding:1.5rem 0 3rem;">
+        <div class="grid-2">
+          <div class="card" aria-labelledby="cat-heading">
+            <div class="card-header"><h2 id="cat-heading">Waste categories</h2></div>
+            <div class="card-body">
+              <ul id="category-list" class="data-list" role="list">
+                <li>Loading…</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card" aria-labelledby="hood-heading">
+            <div class="card-header"><h2 id="hood-heading">Neighbourhoods</h2></div>
+            <div class="card-body">
+              <ul id="neighborhood-list" class="data-list" role="list">
+                <li>Loading…</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section class="panel api-check" aria-live="polite">
-        <h2>API status</h2>
-        <pre id="api-status" class="mono">Checking…</pre>
+      <!-- API status (debug / health) -->
+      <section class="card api-check" aria-labelledby="api-heading" style="margin-bottom:3rem;">
+        <div class="card-header"><h2 id="api-heading">API Status</h2></div>
+        <div class="card-body">
+          <pre id="api-status" class="mono" aria-live="polite">Checking…</pre>
+        </div>
       </section>
-    </main>
-    <script src="assets/js/app.js" defer></script>
-  </body>
+
+    </div>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <p>GaMon &mdash; Garbage Monitoring on Web &bull; Web Technologies Course 2026</p>
+  </footer>
+
+  <style>.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}</style>
+  <script src="assets/js/auth.js" defer></script>
+  <script src="assets/js/app.js" defer></script>
+</body>
 </html>

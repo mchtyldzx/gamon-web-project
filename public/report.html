@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="View and submit garbage accumulation reports — GaMon" />
+  <title>Reports — GaMon</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <a class="nav-brand" href="index.html">Ga<span>Mon</span></a>
+    <ul class="nav-links" id="nav-links" role="list">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="report.html" class="active">Reports</a></li>
+    </ul>
+    <div class="nav-auth" id="nav-auth"></div>
+  </nav>
+
+  <main>
+    <div class="container">
+
+      <!-- Submit new report -->
+      <section class="page-header">
+        <h1>Accumulation Reports</h1>
+        <p>Submit a new garbage accumulation report or browse existing ones.</p>
+      </section>
+
+      <div class="grid-2" style="margin-bottom:2rem;">
+        <!-- New report form -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Submit a Report</h2>
+          </div>
+          <div class="card-body" id="new-report-section">
+            <div class="alert" id="report-alert" role="alert"></div>
+            <form id="report-form" novalidate>
+              <div class="form-group">
+                <label class="form-label" for="report-neighborhood">Neighborhood <span class="required">*</span></label>
+                <select class="form-select" id="report-neighborhood" name="report-neighborhood" required>
+                  <option value="">Loading…</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="report-category">Waste category</label>
+                <select class="form-select" id="report-category" name="report-category">
+                  <option value="">Select category (optional)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="report-desc">Description <span class="required">*</span></label>
+                <textarea class="form-textarea" id="report-desc" name="report-desc"
+                          placeholder="Describe the location and nature of the accumulation…" required></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Severity <span class="required">*</span></label>
+                <div class="severity-group">
+                  <div class="severity-opt sev-low">
+                    <input type="radio" name="severity" id="sev1" value="1" />
+                    <label for="sev1">🟢 Low</label>
+                  </div>
+                  <div class="severity-opt sev-med">
+                    <input type="radio" name="severity" id="sev2" value="2" checked />
+                    <label for="sev2">🟡 Medium</label>
+                  </div>
+                  <div class="severity-opt sev-high">
+                    <input type="radio" name="severity" id="sev3" value="3" />
+                    <label for="sev3">🔴 High</label>
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-full" type="submit">Submit Report</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card">
+          <div class="card-header"><h2>Filter Reports</h2></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label" for="filter-neighborhood">Neighborhood</label>
+              <select class="form-select" id="filter-neighborhood">
+                <option value="">All neighborhoods</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="filter-category">Category</label>
+              <select class="form-select" id="filter-category">
+                <option value="">All categories</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="filter-status">Status</label>
+              <select class="form-select" id="filter-status">
+                <option value="">All statuses</option>
+                <option value="open">Open</option>
+                <option value="assigned">Assigned</option>
+                <option value="resolved">Resolved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+            <button class="btn btn-secondary" id="btn-clear-filters">Clear filters</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Report list -->
+      <section aria-label="Report list" aria-live="polite">
+        <h2 style="font-size:1rem;font-weight:600;color:var(--clr-muted);margin-bottom:1rem;text-transform:uppercase;letter-spacing:.5px;">
+          Report List
+        </h2>
+        <div id="report-grid">
+          <div class="loading-wrap"><div class="spinner"></div></div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>GaMon &mdash; Garbage Monitoring on Web &bull; <a href="index.html">Home</a></p>
+  </footer>
+
+  <script src="assets/js/auth.js" defer></script>
+  <script src="assets/js/reports.js" defer></script>
+</body>
+</html>
