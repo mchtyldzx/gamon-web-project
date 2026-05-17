@@ -12,15 +12,20 @@ Web application for waste collection, sorting, and recycling information, aimed 
 - Data export in CSV and JSON formats
 - Responsive Web interface
 
-## Technologies
+## Front-end vs back-end
 
-### Frontend
-- HTML5
-- CSS3
-- JavaScript (Vanilla JS)
+- **Front-end (browser):** `public/index.html`, `public/assets/css/`, `public/assets/js/` — HTML, CSS, vanilla JS, Ajax/Fetch to the API.
+- **Back-end (server):** `app/` — PHP logic (loaded by scripts under `public/api/`).
 
-### Backend
-- PHP
+The built-in server document root is `public/`, so only that tree is directly reachable; `app/` stays outside the web root.
+
+## Repository layout
+
+- `public/` — static UI + thin PHP entry points in `public/api/`
+- `app/` — server-side code (config, PDO, JSON helpers)
+- `scripts/` — CLI helpers (`init-database.php`)
+- `data/` — SQLite file (ignored by git)
+- `sql/` — schema and seed data
 
 ## Database (first run)
 - SQLite
