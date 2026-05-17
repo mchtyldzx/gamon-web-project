@@ -1,3 +1,9 @@
-*.db
-*.sqlite
-*.sqlite3
+/data/*.sqlite
+/data/*.sqlite-journal
+/data/*.db
+.env
+.env.local
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
