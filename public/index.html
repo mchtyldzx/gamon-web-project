@@ -18,22 +18,21 @@
   </nav>
 
   <main>
-    <!-- Hero -->
-    <header class="hero" role="banner">
-      <h1>Keep your city <em>clean</em></h1>
-      <p>GaMon lets citizens report garbage accumulation sites, track clean-up efforts, and explore statistics by neighbourhood.</p>
-      <div class="hero-actions">
+    <!-- Page header -->
+    <div style="background:var(--green-d);color:#fff;padding:2rem 1rem;text-align:center">
+      <h1 style="font-size:1.8rem;font-weight:700">GaMon</h1>
+      <p style="opacity:.8;margin:.5rem 0 1rem">Garbage Monitoring on Web — report, track and analyse waste accumulation.</p>
+      <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
         <a class="btn btn-primary" href="report.html">View Reports</a>
         <a class="btn btn-ghost" href="register.html">Get started free</a>
       </div>
-    </header>
+    </div>
 
     <div class="container">
 
       <!-- Stats row -->
-      <section aria-labelledby="stats-heading" style="padding:2.5rem 0 1rem;">
-        <h2 id="stats-heading" class="visually-hidden">System overview</h2>
-        <div class="grid-3" id="stat-tiles">
+      <section style="padding:1.5rem 0 0.5rem">
+        <div class="grid-3">
           <div class="stat-tile">
             <span class="stat-value" id="stat-reports">—</span>
             <span class="stat-label">Total reports</span>
@@ -86,7 +85,7 @@
     <p>GaMon &mdash; Garbage Monitoring on Web &bull; Web Technologies Course 2026</p>
   </footer>
 
-  <style>.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}</style>
+
   <script src="assets/js/auth.js" defer></script>
   <script src="assets/js/app.js" defer></script>
 </body>
