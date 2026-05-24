@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="GaMon dashboard — waste statistics and charts" />
+  <title>Dashboard — GaMon</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-brand" href="index.html">Ga<span>Mon</span></a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="report.html">Reports</a></li>
+      <li><a href="dashboard.html" class="active">Dashboard</a></li>
+    </ul>
+    <div class="nav-auth" id="nav-auth"></div>
+  </nav>
+
+  <main>
+    <div class="container">
+
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;padding:1.5rem 0 1rem">
+        <h1 style="font-size:1.4rem;font-weight:700;color:var(--green-d)">Statistics Dashboard</h1>
+        <div style="display:flex;gap:.4rem">
+          <button class="btn btn-primary period-btn" data-period="day">Today</button>
+          <button class="btn btn-secondary period-btn" data-period="week">Week</button>
+          <button class="btn btn-secondary period-btn" data-period="month">Month</button>
+        </div>
+      </div>
+
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:1.5rem">Period: <strong id="d-period">Last 7 days</strong></p>
+
+      <!-- Stat tiles -->
+      <div class="grid-3" style="margin-bottom:1.5rem">
+        <div class="stat-tile">
+          <span class="stat-value" id="d-total">—</span>
+          <span class="stat-label">Total reports</span>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-value" id="d-open" style="color:var(--red)">—</span>
+          <span class="stat-label">Open</span>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-value" id="d-resolved">—</span>
+          <span class="stat-label">Resolved</span>
+        </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="grid-2" style="margin-bottom:1.5rem">
+        <div class="card">
+          <div class="card-header">Reports by category</div>
+          <div class="card-body">
+            <canvas id="chart-cat" height="220"></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Daily trend</div>
+          <div class="card-body">
+            <canvas id="chart-trend" height="220"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:2rem">
+        <div class="card-header">Neighbourhood ranking (open reports ↑ = dirtiest)</div>
+        <div class="card-body">
+          <canvas id="chart-rank" height="180"></canvas>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>GaMon &mdash; Web Technologies 2026</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="assets/js/auth.js" defer></script>
+  <script src="assets/js/dashboard.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="GaMon administration panel" />
+  <title>Admin — GaMon</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+  <style>
+    table { width:100%; border-collapse:collapse; font-size:.875rem; }
+    th { background:var(--bg); color:var(--muted); font-weight:600; text-transform:uppercase; font-size:.72rem; padding:.6rem .9rem; text-align:left; border-bottom:2px solid var(--border); }
+    td { padding:.6rem .9rem; border-bottom:1px solid var(--border); }
+    .badge-admin          { background:#e8e0ff; color:#5030aa; }
+    .badge-staff          { background:#e8f0ff; color:#2255cc; }
+    .badge-decision_maker { background:#fef8ec; color:var(--orange); }
+    .badge-citizen        { background:var(--bg); color:var(--muted); border:1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-brand" href="index.html">Ga<span>Mon</span></a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="report.html">Reports</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="admin.html" class="active">Admin</a></li>
+    </ul>
+    <div class="nav-auth" id="nav-auth"></div>
+  </nav>
+
+  <main>
+    <div class="container">
+
+      <h1 style="font-size:1.4rem;font-weight:700;color:var(--green-d);padding:1.5rem 0 1rem">Admin Panel</h1>
+
+      <!-- Stats -->
+      <div class="grid-3" style="margin-bottom:1.5rem">
+        <div class="stat-tile"><span class="stat-value" id="a-users">—</span><span class="stat-label">Users</span></div>
+        <div class="stat-tile"><span class="stat-value" id="a-reports">—</span><span class="stat-label">Reports</span></div>
+        <div class="stat-tile"><span class="stat-value" id="a-open" style="color:var(--red)">—</span><span class="stat-label">Open</span></div>
+        <div class="stat-tile"><span class="stat-value" id="a-resolved">—</span><span class="stat-label">Resolved</span></div>
+        <div class="stat-tile"><span class="stat-value" id="a-collections">—</span><span class="stat-label">Collections</span></div>
+      </div>
+
+      <!-- Users table -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-header">Users</div>
+        <div class="card-body" style="padding:0;overflow-x:auto">
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th></tr></thead>
+            <tbody id="users-tbody"><tr><td colspan="4">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Reports table -->
+      <div class="card" style="margin-bottom:2rem">
+        <div class="card-header">All Reports</div>
+        <div class="card-body" style="padding:0;overflow-x:auto">
+          <table>
+            <thead><tr><th>ID</th><th>Neighbourhood</th><th>Category</th><th>Status</th><th>Reporter</th></tr></thead>
+            <tbody id="reports-tbody"><tr><td colspan="5">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>GaMon &mdash; Web Technologies 2026</p>
+  </footer>
+
+  <script src="assets/js/auth.js" defer></script>
+  <script src="assets/js/admin.js" defer></script>
+</body>
+</html>
