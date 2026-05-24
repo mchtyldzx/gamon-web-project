@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Map — GaMon</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>#map { height: 520px; border: 1px solid var(--border); border-radius: 4px; }</style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-brand" href="index.html">Ga<span>Mon</span></a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="report.html">Reports</a></li>
+      <li><a href="map.html" class="active">Map</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+    <div class="nav-auth" id="nav-auth"></div>
+  </nav>
+
+  <main>
+    <div class="container">
+      <h1 style="padding:1rem 0 .75rem;font-size:1.3rem;font-weight:700;color:var(--green-d)">Report Map</h1>
+      <div id="map"></div>
+      <p id="map-info" style="font-size:.8rem;color:var(--muted);margin-top:.5rem">Loading reports…</p>
+    </div>
+  </main>
+
+  <footer class="site-footer"><p>GaMon &mdash; Web Technologies 2026</p></footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="assets/js/auth.js" defer></script>
+  <script src="assets/js/map.js" defer></script>
+</body>
+</html>

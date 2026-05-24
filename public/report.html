@@ -13,6 +13,7 @@
     <ul class="nav-links" id="nav-links" role="list">
       <li><a href="index.html">Home</a></li>
       <li><a href="report.html" class="active">Reports</a></li>
+      <li><a href="map.html">Map</a></li>
     </ul>
     <div class="nav-auth" id="nav-auth"></div>
   </nav>
@@ -106,10 +107,15 @@
       </div>
 
       <!-- Report list -->
-      <section aria-label="Report list" aria-live="polite">
-        <h2 style="font-size:1rem;font-weight:600;color:var(--clr-muted);margin-bottom:1rem;text-transform:uppercase;letter-spacing:.5px;">
-          Report List
-        </h2>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem">
+          <h2 style="font-size:.9rem;font-weight:600;color:var(--muted);text-transform:uppercase">Report List</h2>
+          <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+            <a class="btn btn-sm btn-secondary" href="api/export.php?format=csv">CSV</a>
+            <a class="btn btn-sm btn-secondary" href="api/export.php?format=json">JSON</a>
+            <a class="btn btn-sm btn-secondary" href="api/export.php?format=html">HTML</a>
+            <a class="btn btn-sm btn-secondary" href="api/export.php?format=pdf">PDF</a>
+          </div>
+        </div>
         <div id="report-grid">
           <div class="loading-wrap"><div class="spinner"></div></div>
         </div>
