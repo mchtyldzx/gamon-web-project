@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GaMon — Technical Report</title>
+  <style>
+    body { font-family: Georgia, serif; max-width: 860px; margin: 2rem auto; padding: 0 1.5rem; line-height: 1.7; color: #222; }
+    h1 { font-size: 1.8rem; border-bottom: 2px solid #2d6a4f; padding-bottom: .5rem; }
+    h2 { font-size: 1.2rem; color: #1b4332; margin-top: 2rem; }
+    h3 { font-size: 1rem; color: #2d6a4f; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .9rem; }
+    th, td { border: 1px solid #ccc; padding: .4rem .7rem; }
+    th { background: #eee; }
+    code { background: #f4f4f4; padding: .1rem .35rem; border-radius: 3px; font-size: .88rem; }
+    .meta { color: #555; font-size: .9rem; margin-bottom: 2rem; }
+    .abstract { background: #f6f9f7; border-left: 4px solid #2d6a4f; padding: 1rem 1.25rem; margin: 1.5rem 0; font-style: italic; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>GaMon — Garbage Monitoring on Web</h1>
+  <div class="meta">
+    <strong>Course:</strong> Tehnologii Web 2026 &nbsp;|&nbsp;
+    <strong>Instructor:</strong> Assoc. Prof. Dr. Andrei Panu &nbsp;|&nbsp;
+    <strong>Date:</strong> <time datetime="2026-05-26">May 2026</time>
+  </div>
+</header>
+
+<section id="abstract">
+  <div class="abstract">
+    <strong>Abstract.</strong> GaMon is a web application for managing information related to the collection, sorting, and recycling of waste at the level of citizens, authorised personnel, and decision-makers. Users can report garbage accumulation sites; staff can update report statuses and log collection events; decision-makers can view statistical reports and charts. The system exports data in CSV, JSON, HTML, and PDF formats and integrates external geocoding via the Nominatim REST API.
+  </div>
+</section>
+
+<section id="introduction">
+  <h2>1. Introduction</h2>
+  <p>Waste management is a civic challenge that benefits from digital tooling. GaMon provides a lightweight, browser-based interface backed by a PHP/SQLite server. It targets three user roles: <em>citizen</em> (report waste), <em>staff</em> (manage reports), and <em>decision_maker</em> (analyse data). An <em>admin</em> super-role manages users.</p>
+</section>
+
+<section id="requirements">
+  <h2>2. Functional Requirements</h2>
+  <table>
+    <tr><th>#</th><th>Requirement</th><th>Status</th></tr>
+    <tr><td>R1</td><td>User registration and login with roles</td><td>✅</td></tr>
+    <tr><td>R2</td><td>Accumulation report CRUD (create, list, status update)</td><td>✅</td></tr>
+    <tr><td>R3</td><td>Filter reports by neighbourhood, category, status</td><td>✅</td></tr>
+    <tr><td>R4</td><td>Statistical summary by day / week / month</td><td>✅</td></tr>
+    <tr><td>R5</td><td>Neighbourhood ranking (cleanest / dirtiest)</td><td>✅</td></tr>
+    <tr><td>R6</td><td>Data export: CSV, JSON, HTML, PDF</td><td>✅</td></tr>
+    <tr><td>R7</td><td>Data import: CSV and JSON</td><td>✅</td></tr>
+    <tr><td>R8</td><td>Interactive map with report markers (Leaflet)</td><td>✅</td></tr>
+    <tr><td>R9</td><td>Geocoding via external REST API (Nominatim)</td><td>✅</td></tr>
+    <tr><td>R10</td><td>Administration panel (users + all reports)</td><td>✅</td></tr>
+    <tr><td>R11</td><td>Chart visualisations (Chart.js)</td><td>✅</td></tr>
+  </table>
+</section>
+
+<section id="security">
+  <h2>3. Security</h2>
+  <ul>
+    <li><strong>SQL injection:</strong> all database queries use PDO prepared statements.</li>
+    <li><strong>XSS:</strong> all DOM output escaped with <code>htmlspecialchars()</code> (PHP) and a custom <code>escHtml()</code> (JS).</li>
+    <li><strong>Authentication:</strong> passwords hashed with <code>password_hash()</code> (bcrypt). Session-based auth guard on every protected endpoint.</li>
+    <li><strong>CSRF:</strong> a token is generated per session, returned by <code>GET /api/auth/me.php</code>, and validated on every mutating request via the <code>X-CSRF-Token</code> HTTP header.</li>
+  </ul>
+</section>
+
+<section id="architecture">
+  <h2>4. Architecture</h2>
+  <h3>Directory layout</h3>
+  <table>
+    <tr><th>Directory</th><th>Content</th></tr>
+    <tr><td><code>app/</code></td><td>Server-side PHP modules (auth, reports, summary, admin, export, csrf)</td></tr>
+    <tr><td><code>public/</code></td><td>Static HTML pages and thin PHP API entry points (<code>public/api/</code>)</td></tr>
+    <tr><td><code>sql/</code></td><td>SQLite schema and seed data</td></tr>
+    <tr><td><code>data/</code></td><td>SQLite database file (git-ignored)</td></tr>
+    <tr><td><code>scripts/</code></td><td>CLI helper: <code>init-database.php</code></td></tr>
+  </table>
+
+  <h3>Database tables</h3>
+  <p><code>users</code>, <code>waste_categories</code>, <code>neighborhoods</code>, <code>accumulation_reports</code>, <code>collection_events</code>, <code>cleanup_logs</code></p>
+
+  <h3>API endpoints</h3>
+  <table>
+    <tr><th>Method</th><th>Path</th><th>Description</th></tr>
+    <tr><td>GET/POST</td><td><code>/api/reports.php</code></td><td>List or create reports</td></tr>
+    <tr><td>PATCH</td><td><code>/api/reports.php?id=N</code></td><td>Update report status</td></tr>
+    <tr><td>POST</td><td><code>/api/auth/register.php</code></td><td>Register user</td></tr>
+    <tr><td>POST</td><td><code>/api/auth/login.php</code></td><td>Login</td></tr>
+    <tr><td>GET</td><td><code>/api/auth/me.php</code></td><td>Current user + CSRF token</td></tr>
+    <tr><td>GET</td><td><code>/api/summary.php</code></td><td>Period stats, ranking, trend</td></tr>
+    <tr><td>GET</td><td><code>/api/export.php?format=csv|json|html|pdf</code></td><td>Download report data</td></tr>
+    <tr><td>POST</td><td><code>/api/import.php?format=csv|json</code></td><td>Import report data</td></tr>
+    <tr><td>GET</td><td><code>/api/geocode.php?q=address</code></td><td>Nominatim geocoding proxy</td></tr>
+    <tr><td>GET/POST</td><td><code>/api/collections.php</code></td><td>Collection events</td></tr>
+    <tr><td>GET</td><td><code>/api/admin/users.php</code></td><td>User list (admin)</td></tr>
+    <tr><td>GET</td><td><code>/api/admin/stats.php</code></td><td>System statistics (admin)</td></tr>
+  </table>
+</section>
+
+<section id="technologies">
+  <h2>5. Technologies</h2>
+  <table>
+    <tr><th>Layer</th><th>Technology</th><th>Reason</th></tr>
+    <tr><td>Server</td><td>PHP 8.2 (XAMPP)</td><td>Course requirement</td></tr>
+    <tr><td>Database</td><td>SQLite via PDO</td><td>Course requirement; zero-config</td></tr>
+    <tr><td>Front-end</td><td>Vanilla HTML5 / CSS / JS</td><td>No frameworks (course rule)</td></tr>
+    <tr><td>Async</td><td>Fetch API</td><td>Weeks 11–12</td></tr>
+    <tr><td>Charts</td><td>Chart.js (CDN)</td><td>Open-source; no npm</td></tr>
+    <tr><td>Map</td><td>Leaflet.js (CDN)</td><td>Open-source; OSM tiles</td></tr>
+    <tr><td>Geocoding</td><td>Nominatim (cURL proxy)</td><td>Free, no API key; Week 12</td></tr>
+  </table>
+</section>
+
+<section id="conclusion">
+  <h2>6. Conclusion</h2>
+  <p>GaMon fulfils all stated functional and non-functional requirements: multi-role authentication, CRUD operations, asynchronous communication, statistical reporting, multi-format export/import, interactive map, external REST integration, and CSRF/SQLi/XSS protection. The codebase is MIT-licensed and hosted on GitHub with semantic commit messages.</p>
+</section>
+
+</body>
+</html>
