@@ -61,7 +61,7 @@ async function updateStatus(id) {
   try {
     const res = await fetch('api/reports.php?id=' + id, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: Auth.csrfHeaders(),
       body: JSON.stringify({ status }),
     });
     if (!res.ok) {
@@ -170,7 +170,7 @@ async function initReportPage() {
           try {
             const res = await fetch('api/reports.php', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: Auth.csrfHeaders(),
               body: JSON.stringify(body),
             });
             const data = await res.json();

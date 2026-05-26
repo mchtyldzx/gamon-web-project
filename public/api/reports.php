@@ -2,6 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__ . '/../app/auth.php';
 require_once __DIR__ . '/../app/reports.php';
+require_once __DIR__ . '/../app/csrf.php';
 
 header('Content-Type: application/json');
 
@@ -29,6 +30,7 @@ if ($method === 'GET') {
 }
 
 if ($method === 'POST') {
+    gamon_csrf_verify();
     $user = gamon_require_auth(['citizen', 'staff', 'admin']);
     $body = json_decode(file_get_contents('php://input'), true) ?? [];
 
@@ -45,6 +47,7 @@ if ($method === 'POST') {
 }
 
 if ($method === 'PATCH') {
+    gamon_csrf_verify();
     $user = gamon_require_auth(['staff', 'admin']);
     $body = json_decode(file_get_contents('php://input'), true) ?? [];
     $id   = (int)($_GET['id'] ?? 0);

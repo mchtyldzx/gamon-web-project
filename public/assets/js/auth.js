@@ -12,15 +12,17 @@ const Auth = (() => {
     return _user;
   }
 
+  function csrfHeaders() {
+    const token = _user?.csrf_token;
+    return token ? { 'Content-Type': 'application/json', 'X-CSRF-Token': token }
+                 : { 'Content-Type': 'application/json' };
+  }
+
   async function login(email, password) {
-    const res = await fetch('api/auth/login.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+    const res = await fetch('api/auth/login.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Login failed');
-    _user = data;
+    _user = null; // re-fetch to get csrf_token
     return data;
   }
 
@@ -42,7 +44,7 @@ const Auth = (() => {
     window.location.href = 'index.html';
   }
 
-  return { getUser, login, register, logout };
+  return { getUser, login, register, logout, csrfHeaders };
 })();
 
 /* Update nav based on session */
