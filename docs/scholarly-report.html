@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GaMon — Technical Report</title>
+  <style>
+    body { font-family: Georgia, serif; max-width: 860px; margin: 2rem auto; padding: 0 1.5rem; color: #222; line-height: 1.7; }
+    h1 { font-size: 1.8rem; border-bottom: 2px solid #2d6a4f; padding-bottom: .4rem; }
+    h2 { font-size: 1.2rem; color: #2d6a4f; margin-top: 2rem; }
+    h3 { font-size: 1rem; margin-top: 1.2rem; }
+    code, pre { font-family: monospace; background: #f4f4f4; padding: .1rem .3rem; border-radius: 3px; }
+    pre { padding: .75rem 1rem; overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th, td { border: 1px solid #ccc; padding: .4rem .7rem; text-align: left; font-size: .9rem; }
+    th { background: #eee; }
+    .meta { color: #555; font-size: .9rem; margin-bottom: 2rem; }
+    .meta span { margin-right: 1.5rem; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ccc; font-size: .85rem; color: #555; }
+  </style>
+</head>
+<body>
+
+<h1>GaMon — Garbage Monitoring on Web</h1>
+<div class="meta">
+  <span><strong>Course:</strong> Tehnologii Web 2026</span>
+  <span><strong>Instructor:</strong> Assoc. Prof. Dr. Andrei Panu</span>
+  <span><strong>Date:</strong> May 2026</span>
+</div>
+
+<section id="abstract">
+  <h2>Abstract</h2>
+  <p>
+    GaMon is a Web application for managing waste accumulation data at citizen, staff, and decision-maker level.
+    Citizens submit geo-tagged reports of waste accumulation sites. Authorized staff update report statuses and log collection events.
+    Decision-makers view statistical dashboards and export data. The system is built with PHP 8, SQLite, and vanilla JavaScript.
+  </p>
+</section>
+
+<section id="requirements">
+  <h2>1. Requirements</h2>
+
+  <h3>1.1 Functional</h3>
+  <table>
+    <tr><th>#</th><th>Requirement</th><th>Implemented by</th></tr>
+    <tr><td>F1</td><td>User registration and login with roles</td><td><code>api/auth/</code>, <code>app/auth.php</code></td></tr>
+    <tr><td>F2</td><td>Submit accumulation reports (location, category, severity)</td><td><code>api/reports.php</code></td></tr>
+    <tr><td>F3</td><td>Browse and filter reports</td><td><code>report.html</code>, <code>api/reports.php</code></td></tr>
+    <tr><td>F4</td><td>Staff: update report status (open → resolved)</td><td><code>PATCH api/reports.php</code></td></tr>
+    <tr><td>F5</td><td>Statistics dashboard (by period, by category, by neighbourhood)</td><td><code>api/summary.php</code>, <code>dashboard.html</code></td></tr>
+    <tr><td>F6</td><td>Interactive map of report locations</td><td><code>map.html</code>, Leaflet.js</td></tr>
+    <tr><td>F7</td><td>Export reports as CSV and JSON</td><td><code>api/export.php</code></td></tr>
+    <tr><td>F8</td><td>Admin panel: user list, report overview</td><td><code>admin.html</code>, <code>api/admin/</code></td></tr>
+    <tr><td>F9</td><td>Geocoding via external REST API</td><td><code>api/geocode.php</code> (Nominatim/cURL)</td></tr>
+  </table>
+
+  <h3>1.2 Non-Functional</h3>
+  <ul>
+    <li>No server-side or client-side framework (no Laravel, React, jQuery, etc.)</li>
+    <li>SQL injection prevention via PDO prepared statements</li>
+    <li>XSS prevention via <code>htmlspecialchars()</code> on all output</li>
+    <li>Responsive layout (CSS media queries, auto-fit grid)</li>
+    <li>Open-source license (MIT)</li>
+  </ul>
+</section>
+
+<section id="architecture">
+  <h2>2. Architecture</h2>
+  <p>The application follows a simple layered structure:</p>
+  <pre>Browser (HTML + CSS + JS)
+    ↕  Fetch / Ajax (JSON)
+PHP entry points  public/api/*.php
+    ↓  require_once
+PHP modules       app/*.php
+    ↓  PDO
+SQLite            data/gamon.sqlite</pre>
+
+  <p>
+    The web server document root is <code>public/</code>, so <code>app/</code> and <code>data/</code> are not directly accessible from the browser.
+    Each <code>public/api/</code> file is a thin entry point that delegates to a module in <code>app/</code>.
+  </p>
+
+  <h3>2.1 Database Schema</h3>
+  <table>
+    <tr><th>Table</th><th>Purpose</th></tr>
+    <tr><td>users</td><td>Accounts with roles: citizen, staff, decision_maker, admin</td></tr>
+    <tr><td>waste_categories</td><td>Household, paper, plastic, glass, metal, organic, hazardous</td></tr>
+    <tr><td>neighborhoods</td><td>Named areas with locality</td></tr>
+    <tr><td>accumulation_reports</td><td>Core entity: location, category, severity, status, lat/lng</td></tr>
+    <tr><td>collection_events</td><td>Staff-logged waste collection records</td></tr>
+    <tr><td>cleanup_logs</td><td>Audit trail of status changes on reports</td></tr>
+  </table>
+</section>
+
+<section id="api">
+  <h2>3. REST API</h2>
+  <table>
+    <tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr>
+    <tr><td>GET</td><td>/api/health.php</td><td>Service health check</td><td>—</td></tr>
+    <tr><td>GET</td><td>/api/meta.php</td><td>Categories + neighbourhoods</td><td>—</td></tr>
+    <tr><td>POST</td><td>/api/auth/register.php</td><td>Create account</td><td>—</td></tr>
+    <tr><td>POST</td><td>/api/auth/login.php</td><td>Start session</td><td>—</td></tr>
+    <tr><td>POST</td><td>/api/auth/logout.php</td><td>End session</td><td>—</td></tr>
+    <tr><td>GET</td><td>/api/auth/me.php</td><td>Current user</td><td>Session</td></tr>
+    <tr><td>GET</td><td>/api/reports.php</td><td>List reports (filtered)</td><td>—</td></tr>
+    <tr><td>POST</td><td>/api/reports.php</td><td>Submit report</td><td>citizen+</td></tr>
+    <tr><td>PATCH</td><td>/api/reports.php?id=N</td><td>Update status</td><td>staff+</td></tr>
+    <tr><td>GET</td><td>/api/summary.php</td><td>Period stats + ranking</td><td>—</td></tr>
+    <tr><td>GET</td><td>/api/export.php?format=csv|json</td><td>Download data</td><td>—</td></tr>
+    <tr><td>GET</td><td>/api/geocode.php?q=address</td><td>Geocode via Nominatim</td><td>—</td></tr>
+    <tr><td>GET</td><td>/api/admin/stats.php</td><td>Global statistics</td><td>admin</td></tr>
+    <tr><td>GET</td><td>/api/admin/users.php</td><td>User list</td><td>admin</td></tr>
+  </table>
+</section>
+
+<section id="security">
+  <h2>4. Security</h2>
+  <ul>
+    <li><strong>SQL injection:</strong> All queries use PDO prepared statements with bound parameters.</li>
+    <li><strong>XSS:</strong> All data inserted into the DOM is escaped via <code>escHtml()</code> (JS) or <code>htmlspecialchars()</code> (PHP).</li>
+    <li><strong>Authentication:</strong> Passwords hashed with <code>password_hash(BCRYPT)</code>. Sessions managed server-side.</li>
+    <li><strong>Authorisation:</strong> <code>gamon_require_auth($roles)</code> guards every mutating endpoint.</li>
+  </ul>
+</section>
+
+<section id="tech">
+  <h2>5. Technologies &amp; Libraries</h2>
+  <table>
+    <tr><th>Component</th><th>Technology</th><th>License</th></tr>
+    <tr><td>Server language</td><td>PHP 8.2</td><td>PHP License</td></tr>
+    <tr><td>Database</td><td>SQLite via PDO</td><td>Public domain</td></tr>
+    <tr><td>Charts</td><td>Chart.js (CDN)</td><td>MIT</td></tr>
+    <tr><td>Map</td><td>Leaflet.js (CDN)</td><td>BSD-2-Clause</td></tr>
+    <tr><td>Tiles</td><td>OpenStreetMap</td><td>ODbL</td></tr>
+    <tr><td>Geocoding</td><td>Nominatim REST API</td><td>ODbL</td></tr>
+    <tr><td>Frontend</td><td>Vanilla HTML5 / CSS3 / JS</td><td>—</td></tr>
+  </table>
+</section>
+
+<footer>
+  <p>GaMon &mdash; Web Technologies Course 2026 &mdash; MIT License</p>
+</footer>
+
+</body>
+</html>
