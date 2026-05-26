@@ -1,72 +1,45 @@
-# GaMon — Garbage Monitoring on Web
+# GaMon (Garbage Monitoring on Web)
 
-Web application for waste collection, sorting, and recycling management. Course project for **Tehnologii Web 2026**.
+Web application for waste collection, sorting, and recycling information, aimed at citizens, authorized staff, and decision-makers.
+## Main Features
 
-## Stack
+- Garbage reporting system
+- Waste categorization (household, paper, plastic, glass, etc.)
+- Location-based reporting
+- Administration dashboard
+- Statistical reports and charts
+- Data export in CSV and JSON formats
+- Responsive Web interface
 
-- **Server:** PHP 8.2 (XAMPP)
-- **Database:** SQLite via PDO
-- **Front-end:** Vanilla HTML / CSS / JS, Fetch API
-- **Charts:** Chart.js (CDN) | **Map:** Leaflet.js (CDN) | **Geocoding:** Nominatim (cURL)
+## Front-end vs back-end
 
-## Roles
+- **Front-end (browser):** `public/index.html`, `public/assets/css/`, `public/assets/js/` — HTML, CSS, vanilla JS, Ajax/Fetch to the API.
+- **Back-end (server):** `app/` — PHP logic (loaded by scripts under `public/api/`).
 
-| Role | Permissions |
-|------|-------------|
-| `citizen` | Submit reports, view own reports |
-| `staff` | Update report status, log collection events |
-| `decision_maker` | View all reports, statistics, charts |
-| `admin` | Everything above + user management |
+The built-in server document root is `public/`, so only that tree is directly reachable; `app/` stays outside the web root.
 
-## Setup
+## Repository layout
+
+- `public/` — static UI + thin PHP entry points in `public/api/`
+- `app/` — server-side code (config, PDO, JSON helpers)
+- `scripts/` — CLI helpers (`init-database.php`)
+- `data/` — SQLite file (ignored by git)
+- `sql/` — schema and seed data
+
+## Database (first run)
+- SQLite
+
+From the repository root:
 
 ```bash
-# 1. Create database
 php scripts/init-database.php
+```
 
-# 2. Start local server
+Creates `data/gamon.sqlite` (gitignored) from `sql/schema.sql` and `sql/seed.sql`.
+
+## Run locally
+
+```bash
 cd public
 php -S localhost:8080
 ```
-
-Open `http://localhost:8080`
-
-## API Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/api/auth/register.php` | Register |
-| POST | `/api/auth/login.php` | Login |
-| GET | `/api/auth/me.php` | Current user + CSRF token |
-| GET/POST | `/api/reports.php` | List / create reports |
-| PATCH | `/api/reports.php?id=N` | Update status |
-| GET | `/api/summary.php` | Stats (period/ranking/trend) |
-| GET | `/api/export.php?format=csv\|json\|html\|pdf` | Export |
-| POST | `/api/import.php?format=csv\|json` | Import |
-| GET | `/api/geocode.php?q=address` | Nominatim proxy |
-| GET/POST | `/api/collections.php` | Collection events |
-| GET | `/api/admin/users.php` | Users (admin) |
-| GET | `/api/admin/stats.php` | System stats (admin) |
-
-## Security
-
-- PDO prepared statements (SQL injection prevention)
-- `htmlspecialchars()` / `escHtml()` (XSS prevention)
-- `password_hash()` bcrypt
-- Session-based auth guard
-- CSRF token via `X-CSRF-Token` header
-
-## Project structure
-
-```
-app/        server-side PHP modules
-public/     HTML pages + API entry points
-sql/        schema.sql + seed.sql
-scripts/    init-database.php
-docs/       scholarly-report.html, architecture diagram
-data/       gamon.sqlite (git-ignored)
-```
-
-## License
-
-MIT — see [LICENSE](LICENSE)

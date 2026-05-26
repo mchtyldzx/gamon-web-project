@@ -1,5 +1,4 @@
-/* auth.js — login / register / logout helpers */
-
+/* auth.js */
 const Auth = (() => {
   let _user = null;
 
@@ -12,139 +11,81 @@ const Auth = (() => {
     return _user;
   }
 
-  function csrfHeaders() {
-    const token = _user?.csrf_token;
-    return token ? { 'Content-Type': 'application/json', 'X-CSRF-Token': token }
-                 : { 'Content-Type': 'application/json' };
-  }
-
   async function login(email, password) {
-    const res = await fetch('api/auth/login.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+    const res  = await fetch('api/auth/login.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Login failed');
-    _user = null; // re-fetch to get csrf_token
-    return data;
+    _user = data; return data;
   }
 
   async function register(email, password, full_name, role) {
-    const res = await fetch('api/auth/register.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, full_name, role }),
-    });
+    const res  = await fetch('api/auth/register.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password, full_name, role }) });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Registration failed');
-    _user = data;
-    return data;
+    _user = data; return data;
   }
 
   async function logout() {
     await fetch('api/auth/logout.php', { method: 'POST' });
-    _user = null;
-    window.location.href = 'index.html';
+    _user = null; window.location.href = 'index.html';
   }
 
-  return { getUser, login, register, logout, csrfHeaders };
+  return { getUser, login, register, logout };
 })();
 
-/* Update nav based on session */
+function escHtml(s) { const d = document.createElement('div'); d.textContent = String(s ?? ''); return d.innerHTML; }
+
 async function updateNav() {
-  const user = await Auth.getUser();
+  const user   = await Auth.getUser();
   const navAuth = document.getElementById('nav-auth');
-  const navLinks = document.getElementById('nav-links');
   if (!navAuth) return;
-
   if (user) {
-    navAuth.innerHTML = `
-      <span class="nav-user">👋 <strong>${escHtml(user.full_name)}</strong> (${escHtml(user.role)})</span>
+    navAuth.innerHTML = `<span class="nav-user"><strong>${escHtml(user.full_name)}</strong> (${escHtml(user.role)})</span>
       <button class="btn btn-ghost btn-sm" id="btn-logout">Logout</button>`;
-    document.getElementById('btn-logout').addEventListener('click', () => Auth.logout());
-
-    if (navLinks) {
-      const roleLinks = {
-        citizen:        '<li><a href="report.html">My Reports</a></li>',
-        staff:          '<li><a href="report.html">Reports</a></li>',
-        decision_maker: '<li><a href="report.html">Reports</a></li><li><a href="dashboard.html">Dashboard</a></li>',
-        admin:          '<li><a href="report.html">Reports</a></li><li><a href="admin.html">Admin</a></li>',
-      };
-      navLinks.innerHTML = `<li><a href="index.html">Home</a></li>` + (roleLinks[user.role] || '');
-    }
+    document.getElementById('btn-logout').onclick = () => Auth.logout();
   } else {
-    navAuth.innerHTML = `
-      <a class="btn btn-ghost btn-sm" href="login.html">Login</a>
-      <a class="btn btn-secondary btn-sm" href="register.html" style="background:#fff;color:var(--clr-primary)">Register</a>`;
+    navAuth.innerHTML = `<a class="btn btn-ghost btn-sm" href="login.html">Login</a>
+      <a class="btn btn-ghost btn-sm" href="register.html">Register</a>`;
   }
 }
 
-function escHtml(str) {
-  const d = document.createElement('div');
-  d.textContent = str;
-  return d.innerHTML;
-}
-
-/* Handle login form */
 function initLoginForm() {
-  const form  = document.getElementById('login-form');
-  const alert = document.getElementById('login-alert');
-  const btn   = document.getElementById('btn-login');
+  const form = document.getElementById('login-form');
   if (!form) return;
-
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
-    alert.className = 'alert';
+    const alert = document.getElementById('login-alert');
+    const btn   = form.querySelector('button[type=submit]');
     btn.disabled = true;
-    btn.textContent = 'Signing in…';
     try {
-      await Auth.login(
-        form.email.value.trim(),
-        form.password.value
-      );
+      await Auth.login(form.email.value.trim(), form.password.value);
       window.location.href = 'report.html';
     } catch (err) {
-      alert.textContent = err.message;
-      alert.className = 'alert alert-error visible';
+      alert.textContent = err.message; alert.className = 'alert alert-error visible';
       btn.disabled = false;
-      btn.textContent = 'Sign in';
     }
   });
 }
 
-/* Handle register form */
 function initRegisterForm() {
-  const form  = document.getElementById('register-form');
-  const alert = document.getElementById('register-alert');
-  const btn   = document.getElementById('btn-register');
+  const form = document.getElementById('register-form');
   if (!form) return;
-
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
-    alert.className = 'alert';
+    const alert = document.getElementById('register-alert');
+    const btn   = form.querySelector('button[type=submit]');
     if (form.password.value !== form.password2.value) {
-      alert.textContent = 'Passwords do not match.';
-      alert.className = 'alert alert-error visible';
-      return;
+      alert.textContent = 'Passwords do not match.'; alert.className = 'alert alert-error visible'; return;
     }
     btn.disabled = true;
-    btn.textContent = 'Creating account…';
     try {
-      await Auth.register(
-        form.email.value.trim(),
-        form.password.value,
-        form.full_name.value.trim(),
-        form.role.value
-      );
+      await Auth.register(form.email.value.trim(), form.password.value, form.full_name.value.trim(), form.role.value);
       window.location.href = 'report.html';
     } catch (err) {
-      alert.textContent = err.message;
-      alert.className = 'alert alert-error visible';
+      alert.textContent = err.message; alert.className = 'alert alert-error visible';
       btn.disabled = false;
-      btn.textContent = 'Create account';
     }
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  updateNav();
-  initLoginForm();
-  initRegisterForm();
-});
+document.addEventListener('DOMContentLoaded', () => { updateNav(); initLoginForm(); initRegisterForm(); });

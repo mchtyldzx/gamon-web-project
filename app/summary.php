@@ -60,16 +60,3 @@ function gamon_ranking(): array
     return $stmt->fetchAll();
 }
 
-function gamon_trend(string $period = 'week'): array
-{
-    $pdo  = gamon_pdo();
-    $days = $period === 'month' ? 30 : ($period === 'day' ? 1 : 7);
-    $stmt = $pdo->prepare(
-        "SELECT date(created_at) AS day, COUNT(*) AS cnt
-         FROM accumulation_reports
-         WHERE date(created_at) >= date('now', ? || ' days')
-         GROUP BY day ORDER BY day ASC"
-    );
-    $stmt->execute(["-$days"]);
-    return $stmt->fetchAll();
-}
