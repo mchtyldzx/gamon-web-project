@@ -24,4 +24,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (e) {
     document.getElementById('map-info').textContent = 'Failed to load reports.';
   }
+
+  /* Geocode search — uses api/geocode.php (PHP cURL → Nominatim) */
+  let geoMarker = null;
+  async function geoSearch() {
+    const q = document.getElementById('geo-query')?.value.trim();
+    if (!q) return;
+    try {
+      const res   = await fetch('api/geocode.php?q=' + encodeURIComponent(q));
+      const items = await res.json();
+      if (!items.length) { document.getElementById('map-info').textContent = 'Address not found.'; return; }
+      const { lat, lon, display_name } = items[0];
+      if (geoMarker) map.removeLayer(geoMarker);
+      geoMarker = L.marker([lat, lon]).addTo(map).bindPopup(display_name).openPopup();
+      map.setView([lat, lon], 14);
+    } catch { document.getElementById('map-info').textContent = 'Geocode error.'; }
+  }
+  document.getElementById('geo-btn')?.addEventListener('click', geoSearch);
+  document.getElementById('geo-query')?.addEventListener('keydown', e => { if (e.key === 'Enter') geoSearch(); });
 });

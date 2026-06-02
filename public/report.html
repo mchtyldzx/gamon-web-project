@@ -109,9 +109,13 @@
       <!-- Report list -->
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem">
           <h2 style="font-size:.9rem;font-weight:600;color:var(--muted);text-transform:uppercase">Report List</h2>
-          <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <div style="display:flex;gap:.4rem;flex-wrap:wrap;align-items:center">
+            <span style="font-size:.75rem;color:var(--muted)">Export:</span>
             <a class="btn btn-sm btn-secondary" href="api/export.php?format=csv">CSV</a>
             <a class="btn btn-sm btn-secondary" href="api/export.php?format=json">JSON</a>
+            <span style="font-size:.75rem;color:var(--muted);margin-left:.5rem">Import:</span>
+            <label class="btn btn-sm btn-secondary" style="cursor:pointer">CSV <input type="file" accept=".csv" id="import-csv" hidden></label>
+            <label class="btn btn-sm btn-secondary" style="cursor:pointer">JSON <input type="file" accept=".json" id="import-json" hidden></label>
           </div>
         </div>
         <div id="report-grid">

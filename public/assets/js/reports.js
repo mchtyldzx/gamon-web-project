@@ -200,6 +200,35 @@ async function initReportPage() {
     loadReports();
   });
 
+  /* Import handlers */
+  document.getElementById('import-csv')?.addEventListener('change', async (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const fd = new FormData(); fd.append('file', file);
+    try {
+      const res = await fetch('api/import.php?format=csv', { method: 'POST', body: fd });
+      const d   = await res.json();
+      if (!res.ok) throw new Error(d.error || 'Import failed');
+      alert(`Imported ${d.imported} reports from CSV`);
+      loadReports();
+    } catch (err) { alert(err.message); }
+    e.target.value = '';
+  });
+
+  document.getElementById('import-json')?.addEventListener('change', async (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const text = await file.text();
+    try {
+      const res = await fetch('api/import.php?format=json', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: text,
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || 'Import failed');
+      alert(`Imported ${d.imported} reports from JSON`);
+      loadReports();
+    } catch (err) { alert(err.message); }
+    e.target.value = '';
+  });
+
   loadReports();
 }
 

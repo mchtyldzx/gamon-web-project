@@ -22,6 +22,10 @@
   <main>
     <div class="container">
       <h1 style="padding:1rem 0 .75rem;font-size:1.3rem;font-weight:700;color:var(--green-d)">Report Map</h1>
+      <div style="display:flex;gap:.5rem;margin-bottom:.75rem">
+        <input class="form-input" id="geo-query" placeholder="Search address…" style="flex:1">
+        <button class="btn btn-primary" id="geo-btn">Search</button>
+      </div>
       <div id="map"></div>
       <p id="map-info" style="font-size:.8rem;color:var(--muted);margin-top:.5rem">Loading reports…</p>
     </div>
