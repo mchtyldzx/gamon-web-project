@@ -8,11 +8,10 @@ async function loadStats() {
     const res  = await fetch('api/admin/stats.php');
     if (!res.ok) { if (res.status === 401 || res.status === 403) { window.location.href = 'login.html'; } return; }
     const s = await res.json();
-    document.getElementById('a-users').textContent       = s.users;
-    document.getElementById('a-reports').textContent     = s.reports;
-    document.getElementById('a-open').textContent        = s.open;
-    document.getElementById('a-resolved').textContent    = s.resolved;
-    document.getElementById('a-collections').textContent = s.collections;
+    document.getElementById('a-users').textContent    = s.users;
+    document.getElementById('a-reports').textContent  = s.reports;
+    document.getElementById('a-open').textContent     = s.open;
+    document.getElementById('a-resolved').textContent = s.resolved;
   } catch(e) { console.error(e); }
 }
 

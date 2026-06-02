@@ -16,10 +16,9 @@ function gamon_admin_stats(): array
     $pdo = gamon_pdo();
     $r   = fn(string $sql) => (int) $pdo->query($sql)->fetchColumn();
     return [
-        'users'       => $r('SELECT COUNT(*) FROM users'),
-        'reports'     => $r('SELECT COUNT(*) FROM accumulation_reports'),
-        'open'        => $r("SELECT COUNT(*) FROM accumulation_reports WHERE status = 'open'"),
-        'resolved'    => $r("SELECT COUNT(*) FROM accumulation_reports WHERE status = 'resolved'"),
-        'collections' => $r('SELECT COUNT(*) FROM collection_events'),
+        'users'    => $r('SELECT COUNT(*) FROM users'),
+        'reports'  => $r('SELECT COUNT(*) FROM accumulation_reports'),
+        'open'     => $r("SELECT COUNT(*) FROM accumulation_reports WHERE status = 'open'"),
+        'resolved' => $r("SELECT COUNT(*) FROM accumulation_reports WHERE status = 'resolved'"),
     ];
 }
