@@ -14,17 +14,17 @@ CREATE TABLE IF NOT EXISTS waste_categories (
   description TEXT
 );
 
-CREATE TABLE IF NOT EXISTS neighborhoods (
+CREATE TABLE IF NOT EXISTS cities (
   id       INTEGER PRIMARY KEY AUTOINCREMENT,
-  name     TEXT NOT NULL,
-  locality TEXT NOT NULL,
-  UNIQUE (name, locality)
+  locality TEXT NOT NULL UNIQUE,
+  lat      REAL,
+  lng      REAL
 );
 
 CREATE TABLE IF NOT EXISTS accumulation_reports (
   id              INTEGER PRIMARY KEY AUTOINCREMENT,
   reporter_id     INTEGER NOT NULL,
-  neighborhood_id INTEGER NOT NULL,
+  city_id INTEGER NOT NULL,
   category_id     INTEGER,
   description     TEXT    NOT NULL,
   status          TEXT    NOT NULL DEFAULT 'open'
@@ -35,19 +35,19 @@ CREATE TABLE IF NOT EXISTS accumulation_reports (
   created_at      TEXT    NOT NULL DEFAULT (datetime('now')),
   resolved_at     TEXT,
   FOREIGN KEY (reporter_id)     REFERENCES users (id),
-  FOREIGN KEY (neighborhood_id) REFERENCES neighborhoods (id),
+  FOREIGN KEY (city_id) REFERENCES cities (id),
   FOREIGN KEY (category_id)     REFERENCES waste_categories (id)
 );
 
 CREATE TABLE IF NOT EXISTS collection_events (
   id              INTEGER PRIMARY KEY AUTOINCREMENT,
-  neighborhood_id INTEGER NOT NULL,
+  city_id INTEGER NOT NULL,
   category_id     INTEGER NOT NULL,
   staff_id        INTEGER NOT NULL,
   quantity_kg     REAL    NOT NULL DEFAULT 0,
   collected_at    TEXT    NOT NULL DEFAULT (datetime('now')),
   notes           TEXT,
-  FOREIGN KEY (neighborhood_id) REFERENCES neighborhoods (id),
+  FOREIGN KEY (city_id) REFERENCES cities (id),
   FOREIGN KEY (category_id)     REFERENCES waste_categories (id),
   FOREIGN KEY (staff_id)        REFERENCES users (id)
 );
@@ -63,8 +63,8 @@ CREATE TABLE IF NOT EXISTS cleanup_logs (
   FOREIGN KEY (staff_id)  REFERENCES users (id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_reports_neighborhood ON accumulation_reports (neighborhood_id);
+CREATE INDEX IF NOT EXISTS idx_reports_city ON accumulation_reports (city_id);
 CREATE INDEX IF NOT EXISTS idx_reports_created      ON accumulation_reports (created_at);
 CREATE INDEX IF NOT EXISTS idx_reports_status       ON accumulation_reports (status);
-CREATE INDEX IF NOT EXISTS idx_collections_hood     ON collection_events (neighborhood_id);
+CREATE INDEX IF NOT EXISTS idx_collections_hood     ON collection_events (city_id);
 CREATE INDEX IF NOT EXISTS idx_cleanup_report       ON cleanup_logs (report_id);
