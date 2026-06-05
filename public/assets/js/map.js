@@ -8,14 +8,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   }).addTo(map);
 
   try {
-    const res     = await fetch('api/reports.php');
+    const res = await fetch('api/reports.php');
+    if (res.status === 401) { window.location.href = 'login.html'; return; }
     const reports = await res.json();
     const located = reports.filter(r => r.lat && r.lng);
 
     located.forEach(r => {
       const color = STATUS_COLOR[r.status] || '#888';
       L.circleMarker([r.lat, r.lng], { radius: 8, color, fillColor: color, fillOpacity: 0.8 })
-        .bindPopup(`<strong>#${r.id}</strong> — ${r.neighborhood_name}<br><em>${r.description.slice(0,80)}</em><br>Status: ${r.status}`)
+        .bindPopup(`<strong>#${r.id}</strong> — ${r.city_name}<br><em>${r.description.slice(0,80)}</em><br>Status: ${r.status}`)
         .addTo(map);
     });
 

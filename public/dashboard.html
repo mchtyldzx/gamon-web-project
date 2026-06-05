@@ -24,13 +24,18 @@
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;padding:1.5rem 0 1rem">
         <h1 style="font-size:1.4rem;font-weight:700;color:var(--green-d)">Statistics Dashboard</h1>
         <div style="display:flex;gap:.4rem">
-          <button class="btn btn-primary period-btn" data-period="day">Today</button>
-          <button class="btn btn-secondary period-btn" data-period="week">Week</button>
-          <button class="btn btn-secondary period-btn" data-period="month">Month</button>
+          <span style="font-size:.75rem;color:var(--muted);margin-right:.25rem">Export:</span>
+          <a class="btn btn-sm btn-secondary" href="api/export.php?format=csv">CSV</a>
+          <a class="btn btn-sm btn-secondary" href="api/export.php?format=json">JSON</a>
+          <button class="btn btn-sm btn-secondary" id="btn-export-pdf">PDF</button>
+          <div id="dashboard-import-section" style="display:none;align-items:center;margin-left:.5rem;gap:.4rem">
+            <div style="border-left:1px solid var(--border);height:24px;margin-right:.25rem"></div>
+            <span style="font-size:.75rem;color:var(--muted)">Import:</span>
+            <label class="btn btn-sm btn-secondary" style="cursor:pointer">CSV <input type="file" accept=".csv" id="import-csv" hidden></label>
+            <label class="btn btn-sm btn-secondary" style="cursor:pointer">JSON <input type="file" accept=".json" id="import-json" hidden></label>
+          </div>
         </div>
       </div>
-
-      <p style="color:var(--muted);font-size:.85rem;margin-bottom:1.5rem">Period: <strong id="d-period">Last 7 days</strong></p>
 
       <!-- Stat tiles -->
       <div class="grid-3" style="margin-bottom:1.5rem">
@@ -39,12 +44,23 @@
           <span class="stat-label">Total reports</span>
         </div>
         <div class="stat-tile">
-          <span class="stat-value" id="d-open" style="color:var(--red)">—</span>
-          <span class="stat-label">Open</span>
+          <span class="stat-value" id="d-open" style="color:#c44536">—</span>
+          <span class="stat-label">Open reports</span>
         </div>
         <div class="stat-tile">
-          <span class="stat-value" id="d-resolved">—</span>
-          <span class="stat-label">Resolved</span>
+          <span class="stat-value" id="d-resolved" style="color:#2d6a4f">—</span>
+          <span class="stat-label">Resolved reports</span>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:2rem; gap:1rem">
+        <div class="stat-tile" style="border-left:4px solid #2d6a4f; background:#f4f9f6">
+          <span class="stat-value" id="d-cleanest" style="font-size:1.1rem; color:#2d6a4f; margin-bottom:4px">—</span>
+          <span class="stat-label">🌟 Cleanest City</span>
+        </div>
+        <div class="stat-tile" style="border-left:4px solid #c44536; background:#fdf2f1">
+          <span class="stat-value" id="d-dirtiest" style="font-size:1.1rem; color:#c44536; margin-bottom:4px">—</span>
+          <span class="stat-label">🚨 Dirtiest City</span>
         </div>
       </div>
 
@@ -55,7 +71,7 @@
           <div class="card-body"><canvas id="chart-cat" height="220"></canvas></div>
         </div>
         <div class="card">
-          <div class="card-header">Neighbourhood ranking</div>
+          <div class="card-header">City ranking</div>
           <div class="card-body"><canvas id="chart-rank" height="220"></canvas></div>
         </div>
       </div>
@@ -68,6 +84,7 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
   <script src="assets/js/auth.js" defer></script>
   <script src="assets/js/dashboard.js" defer></script>
 </body>

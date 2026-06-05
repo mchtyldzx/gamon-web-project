@@ -37,8 +37,8 @@
             <div class="alert" id="report-alert" role="alert"></div>
             <form id="report-form" novalidate>
               <div class="form-group">
-                <label class="form-label" for="report-neighborhood">Neighborhood <span class="required">*</span></label>
-                <select class="form-select" id="report-neighborhood" name="report-neighborhood" required>
+                <label class="form-label" for="report-city">City <span class="required">*</span></label>
+                <select class="form-select" id="report-city" name="report-city" required>
                   <option value="">Loading…</option>
                 </select>
               </div>
@@ -80,9 +80,9 @@
           <div class="card-header"><h2>Filter Reports</h2></div>
           <div class="card-body">
             <div class="form-group">
-              <label class="form-label" for="filter-neighborhood">Neighborhood</label>
-              <select class="form-select" id="filter-neighborhood">
-                <option value="">All neighborhoods</option>
+              <label class="form-label" for="filter-city">City</label>
+              <select class="form-select" id="filter-city">
+                <option value="">All cities</option>
               </select>
             </div>
             <div class="form-group">
@@ -101,22 +101,22 @@
                 <option value="rejected">Rejected</option>
               </select>
             </div>
+            <div class="form-group">
+              <label class="form-label" for="filter-date">Date</label>
+              <select class="form-select" id="filter-date">
+                <option value="" selected>All time</option>
+                <option value="day">Today</option>
+                <option value="week">Last 7 days</option>
+                <option value="month">This month</option>
+              </select>
+            </div>
             <button class="btn btn-secondary" id="btn-clear-filters">Clear filters</button>
           </div>
         </div>
       </div>
 
-      <!-- Report list -->
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem">
           <h2 style="font-size:.9rem;font-weight:600;color:var(--muted);text-transform:uppercase">Report List</h2>
-          <div style="display:flex;gap:.4rem;flex-wrap:wrap;align-items:center">
-            <span style="font-size:.75rem;color:var(--muted)">Export:</span>
-            <a class="btn btn-sm btn-secondary" href="api/export.php?format=csv">CSV</a>
-            <a class="btn btn-sm btn-secondary" href="api/export.php?format=json">JSON</a>
-            <span style="font-size:.75rem;color:var(--muted);margin-left:.5rem">Import:</span>
-            <label class="btn btn-sm btn-secondary" style="cursor:pointer">CSV <input type="file" accept=".csv" id="import-csv" hidden></label>
-            <label class="btn btn-sm btn-secondary" style="cursor:pointer">JSON <input type="file" accept=".json" id="import-json" hidden></label>
-          </div>
         </div>
         <div id="report-grid">
           <div class="loading-wrap"><div class="spinner"></div></div>

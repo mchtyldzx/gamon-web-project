@@ -36,16 +36,48 @@ const Auth = (() => {
 function escHtml(s) { const d = document.createElement('div'); d.textContent = String(s ?? ''); return d.innerHTML; }
 
 async function updateNav() {
-  const user   = await Auth.getUser();
+  const user = await Auth.getUser();
   const navAuth = document.getElementById('nav-auth');
+  const navLinks = document.getElementById('nav-links');
+  
+  if (navLinks) {
+    let links = `<li><a href="index.html">Home</a></li>`;
+    if (user) {
+      links += `<li><a href="report.html">Reports</a></li>
+                <li><a href="map.html">Map</a></li>`;
+      if (user.role === 'decision_maker' || user.role === 'admin') {
+        links += `<li><a href="dashboard.html">Dashboard</a></li>`;
+      }
+      if (user.role === 'admin') {
+        links += `<li><a href="admin.html">Admin</a></li>`;
+      }
+    }
+    navLinks.innerHTML = links;
+    
+    // Highlight active
+    const current = window.location.pathname.split('/').pop() || 'index.html';
+    navLinks.querySelectorAll('a').forEach(a => {
+      if (a.getAttribute('href') === current) a.classList.add('active');
+    });
+  }
+
   if (!navAuth) return;
   if (user) {
     navAuth.innerHTML = `<span class="nav-user"><strong>${escHtml(user.full_name)}</strong> (${escHtml(user.role)})</span>
-      <button class="btn btn-ghost btn-sm" id="btn-logout">Logout</button>`;
-    document.getElementById('btn-logout').onclick = () => Auth.logout();
+                         <button class="btn btn-sm btn-ghost" onclick="Auth.logout()">Log out</button>`;
+                         
+    // Hide Login/Register button on index page
+    const btnHero = document.getElementById('btn-login-register');
+    if (btnHero) btnHero.style.display = 'none';
+
+    // Redirect away from login/register pages if already logged in
+    const path = window.location.pathname;
+    if (path.endsWith('login.html') || path.endsWith('register.html')) {
+        window.location.href = 'index.html';
+    }
   } else {
-    navAuth.innerHTML = `<a class="btn btn-ghost btn-sm" href="login.html">Login</a>
-      <a class="btn btn-ghost btn-sm" href="register.html">Register</a>`;
+    navAuth.innerHTML = `<a href="login.html" class="btn btn-sm btn-ghost">Log in</a>
+                         <a href="register.html" class="btn btn-sm btn-primary">Sign up</a>`;
   }
 }
 
@@ -79,7 +111,7 @@ function initRegisterForm() {
     }
     btn.disabled = true;
     try {
-      await Auth.register(form.email.value.trim(), form.password.value, form.full_name.value.trim(), form.role.value);
+      await Auth.register(form.email.value.trim(), form.password.value, form.full_name.value.trim(), 'citizen');
       window.location.href = 'report.html';
     } catch (err) {
       alert.textContent = err.message; alert.className = 'alert alert-error visible';

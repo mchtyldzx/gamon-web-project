@@ -27,13 +27,13 @@ async function loadMeta() {
       }
     }
 
-    const hoodList = document.getElementById('neighborhood-list');
+    const hoodList = document.getElementById('city-list');
     if (hoodList) {
-      if (!data.neighborhoods?.length) {
-        hoodList.innerHTML = '<li>No neighbourhoods found.</li>';
+      if (!data.cities?.length) {
+        hoodList.innerHTML = '<li>No cities found.</li>';
       } else {
-        hoodList.innerHTML = data.neighborhoods.map(n =>
-          `<li>📍 ${escHtml(n.name)}, ${escHtml(n.locality)}</li>`
+        hoodList.innerHTML = data.cities.map(n =>
+          `<li>📍 ${escHtml(n.locality)}</li>`
         ).join('');
       }
     }
@@ -43,17 +43,7 @@ async function loadMeta() {
   }
 }
 
-async function loadHealth() {
-  const el = document.getElementById('api-status');
-  if (!el) return;
-  try {
-    const res  = await fetch('api/health.php');
-    const data = await res.json();
-    el.textContent = JSON.stringify(data, null, 2);
-  } catch (e) {
-    el.textContent = 'Error: ' + e.message;
-  }
-}
+
 
 async function loadStats() {
   try {
@@ -73,6 +63,5 @@ async function loadStats() {
 
 document.addEventListener('DOMContentLoaded', () => {
   loadMeta();
-  loadHealth();
   loadStats();
 });

@@ -46,7 +46,7 @@ function buildReportCard(r, canChangeStatus) {
       </div>
       <p class="report-desc">${escHtml(r.description)}</p>
       <div class="report-meta">
-        <span>📍 ${escHtml(r.neighborhood_name)}, ${escHtml(r.locality)}</span>
+        <span>📍 ${escHtml(r.locality)}</span>
         <span>👤 ${escHtml(r.reporter_name)}</span>
         <span>🗓 ${fmtDate(r.created_at)}</span>
       </div>
@@ -79,7 +79,7 @@ async function loadMeta() {
     const res  = await fetch('api/meta.php');
     const data = await res.json();
     return data;
-  } catch { return { categories: [], neighborhoods: [] }; }
+  } catch { return { categories: [], cities: [] }; }
 }
 
 function populateSelect(selectId, items, valueKey, labelKey, placeholder = 'All') {
@@ -96,10 +96,10 @@ async function loadReports() {
   grid.innerHTML = '<div class="loading-wrap"><div class="spinner"></div></div>';
 
   const params = new URLSearchParams();
-  const nhood  = document.getElementById('filter-neighborhood')?.value;
+  const nhood  = document.getElementById('filter-city')?.value;
   const cat    = document.getElementById('filter-category')?.value;
   const status = document.getElementById('filter-status')?.value;
-  if (nhood)  params.set('neighborhood_id', nhood);
+  if (nhood)  params.set('city_id', nhood);
   if (cat)    params.set('category_id', cat);
   if (status) params.set('status', status);
 
@@ -136,7 +136,7 @@ async function initReportPage() {
   const newSection = document.getElementById('new-report-section');
 
   const meta = await loadMeta();
-  populateSelect('filter-neighborhood', meta.neighborhoods, 'id', 'name');
+  populateSelect('filter-city', meta.cities, 'id', 'locality');
   populateSelect('filter-category',    meta.categories,    'id', 'name');
 
   if (newSection) {
@@ -144,7 +144,7 @@ async function initReportPage() {
       newSection.innerHTML = `<div class="alert alert-warning visible" style="margin-bottom:0">
         <a href="login.html">Sign in</a> to submit a garbage accumulation report.</div>`;
     } else {
-      populateSelect('report-neighborhood', meta.neighborhoods, 'id', 'name', 'Select neighborhood');
+      populateSelect('report-city', meta.cities, 'id', 'locality', 'Select city');
       populateSelect('report-category',     meta.categories,    'id', 'name', 'Select category (optional)');
 
       const form  = document.getElementById('report-form');
@@ -156,12 +156,12 @@ async function initReportPage() {
           const btn = form.querySelector('button[type=submit]');
           btn.disabled = true; btn.textContent = 'Submitting…';
           const body = {
-            neighborhood_id: form['report-neighborhood'].value,
+            city_id: form['report-city'].value,
             category_id:     form['report-category'].value,
             description:     form['report-desc'].value.trim(),
             severity:        form.querySelector('input[name="severity"]:checked')?.value || '2',
           };
-          if (!body.neighborhood_id || !body.description) {
+          if (!body.city_id || !body.description) {
             alert.textContent = 'Please fill in all required fields.';
             alert.className = 'alert alert-error visible';
             btn.disabled = false; btn.textContent = 'Submit Report';
@@ -189,11 +189,11 @@ async function initReportPage() {
     }
   }
 
-  document.getElementById('filter-neighborhood')?.addEventListener('change', loadReports);
+  document.getElementById('filter-city')?.addEventListener('change', loadReports);
   document.getElementById('filter-category')?.addEventListener('change', loadReports);
   document.getElementById('filter-status')?.addEventListener('change', loadReports);
   document.getElementById('btn-clear-filters')?.addEventListener('click', () => {
-    ['filter-neighborhood','filter-category','filter-status'].forEach(id => {
+    ['filter-city','filter-category','filter-status'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });

@@ -1,19 +1,21 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . '/../app/auth.php';
-require_once __DIR__ . '/../app/reports.php';
+require_once dirname(__DIR__, 2) . '/app/auth.php';
+require_once dirname(__DIR__, 2) . '/app/reports.php';
 
 header('Content-Type: application/json');
 
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
+    $user = gamon_require_auth(); // Anonymous cannot see reports
+    
     $filters = [];
-    if (!empty($_GET['neighborhood_id'])) $filters['neighborhood_id'] = $_GET['neighborhood_id'];
+    if (!empty($_GET['city_id'])) $filters['city_id'] = $_GET['city_id'];
     if (!empty($_GET['category_id']))     $filters['category_id']     = $_GET['category_id'];
     if (!empty($_GET['status']))          $filters['status']          = $_GET['status'];
+    if (!empty($_GET['period']))          $filters['period']          = $_GET['period'];
 
-    $user = gamon_session_user();
     if ($user && $user['role'] === 'citizen') {
         $filters['reporter_id'] = $user['id'];
     }
@@ -29,12 +31,12 @@ if ($method === 'GET') {
 }
 
 if ($method === 'POST') {
-    $user = gamon_require_auth(['citizen', 'staff', 'admin']);
+    $user = gamon_require_auth(['citizen', 'staff', 'decision_maker', 'admin']);
     $body = json_decode(file_get_contents('php://input'), true) ?? [];
 
-    if (empty($body['neighborhood_id']) || empty($body['description'])) {
+    if (empty($body['city_id']) || empty($body['description'])) {
         http_response_code(400);
-        echo json_encode(['error' => 'neighborhood_id and description are required']);
+        echo json_encode(['error' => 'city_id and description are required']);
         exit;
     }
 
@@ -57,6 +59,22 @@ if ($method === 'PATCH') {
 
     $ok = gamon_reports_update_status($id, $body['status'], $user, $body['note'] ?? '');
     echo json_encode(['ok' => $ok]);
+    exit;
+}
+
+if ($method === 'DELETE') {
+    $user = gamon_require_auth(['admin']);
+    $id   = (int)($_GET['id'] ?? 0);
+    
+    if ($id <= 0) {
+        http_response_code(400); echo json_encode(['error' => 'Valid ID required']); exit;
+    }
+    
+    $pdo = gamon_pdo();
+    $pdo->prepare('DELETE FROM cleanup_logs WHERE report_id = ?')->execute([$id]);
+    $pdo->prepare('DELETE FROM accumulation_reports WHERE id = ?')->execute([$id]);
+    
+    echo json_encode(['success' => true]);
     exit;
 }
 

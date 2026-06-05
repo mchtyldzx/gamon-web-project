@@ -1,6 +1,14 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . '/../app/export.php';
+require_once dirname(__DIR__, 2) . '/app/auth.php';
+require_once dirname(__DIR__, 2) . '/app/export.php';
+
+$user = gamon_require_auth();
+if ($user['role'] !== 'decision_maker' && $user['role'] !== 'admin') {
+    http_response_code(403);
+    die('Forbidden: You do not have permission to export data.');
+}
 
 $rows = gamon_reports_list();
-$_GET['format'] === 'csv' ? export_csv($rows) : export_json($rows);
+$format = $_GET['format'] ?? 'json';
+$format === 'csv' ? export_csv($rows) : export_json($rows);

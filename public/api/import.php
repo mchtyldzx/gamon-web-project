@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . '/../app/bootstrap.php';
-require_once __DIR__ . '/../app/auth.php';
+require_once dirname(__DIR__, 2) . '/app/bootstrap.php';
+require_once dirname(__DIR__, 2) . '/app/auth.php';
 
 header('Content-Type: application/json');
 
@@ -12,6 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $user = gamon_require_auth();
+if ($user['role'] !== 'admin') {
+    http_response_code(403);
+    echo json_encode(['error' => 'Forbidden: Only admin can import data']);
+    exit;
+}
 $pdo  = gamon_pdo();
 
 $format = $_GET['format'] ?? '';
@@ -54,21 +59,69 @@ echo json_encode(['error' => 'format=csv or format=json required']);
 
 /* --- shared insert logic --- */
 function importRows(PDO $pdo, array $rows, int $userId): int {
-    $stmt = $pdo->prepare(
-        'INSERT INTO accumulation_reports (neighborhood_id, category_id, user_id, description, severity, status)
-         VALUES (?, ?, ?, ?, ?, ?)'
+    $stmtWithDate = $pdo->prepare(
+        'INSERT INTO accumulation_reports (city_id, category_id, reporter_id, description, severity, status, lat, lng, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
     );
+    $stmtNoDate = $pdo->prepare(
+        'INSERT INTO accumulation_reports (city_id, category_id, reporter_id, description, severity, status, lat, lng)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+    );
+    
+    // Cache for city coordinates
+    $nCache = [];
+    
     $count = 0;
     foreach ($rows as $r) {
-        if (empty($r['neighborhood_id']) || empty($r['description'])) continue;
-        $stmt->execute([
-            (int)$r['neighborhood_id'],
-            !empty($r['category_id']) ? (int)$r['category_id'] : null,
+        $nid = !empty($r['city_id']) ? (int)$r['city_id'] : null;
+        if (!$nid && !empty($r['city'])) {
+            $stmt = $pdo->prepare("SELECT id FROM cities WHERE locality = ?");
+            $stmt->execute([trim($r['city'])]);
+            $nid = $stmt->fetchColumn() ?: null;
+        }
+        if (!$nid || empty($r['description'])) continue;
+        
+
+        $lat = isset($r['lat']) && $r['lat'] !== '' ? (float)$r['lat'] : null;
+        $lng = isset($r['lng']) && $r['lng'] !== '' ? (float)$r['lng'] : null;
+        
+        if ($lat === null || $lng === null) {
+            if (!array_key_exists($nid, $nCache)) {
+                $nStmt = $pdo->prepare('SELECT lat, lng FROM cities WHERE id = ?');
+                $nStmt->execute([$nid]);
+                $nRow = $nStmt->fetch();
+                $nCache[$nid] = $nRow ? $nRow : false;
+            }
+            if ($nCache[$nid]) {
+                $lat = $nCache[$nid]['lat'] !== null ? (float)$nCache[$nid]['lat'] : null;
+                $lng = $nCache[$nid]['lng'] !== null ? (float)$nCache[$nid]['lng'] : null;
+            }
+        }
+        
+        $catId = !empty($r['category_id']) ? (int)$r['category_id'] : null;
+        if (!$catId && !empty($r['category'])) {
+            $stmt = $pdo->prepare("SELECT id FROM waste_categories WHERE name = ?");
+            $stmt->execute([trim($r['category'])]);
+            $catId = $stmt->fetchColumn() ?: null;
+        }
+        
+        $params = [
+            $nid,
+            $catId,
             $userId,
             $r['description'],
             (int)($r['severity'] ?? 2),
             $r['status'] ?? 'open',
-        ]);
+            $lat,
+            $lng,
+        ];
+        
+        if (!empty($r['created_at'])) {
+            $params[] = $r['created_at'];
+            $stmtWithDate->execute($params);
+        } else {
+            $stmtNoDate->execute($params);
+        }
         $count++;
     }
     return $count;

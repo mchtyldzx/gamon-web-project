@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . '/../../app/auth.php';
+require_once dirname(__DIR__, 3) . '/app/auth.php';
 
 header('Content-Type: application/json');
 
@@ -35,10 +35,7 @@ if (strlen($password) < 6) {
     exit;
 }
 
-$allowed_roles = ['citizen', 'staff', 'decision_maker'];
-if (!in_array($role, $allowed_roles, true)) {
-    $role = 'citizen';
-}
+$role = 'citizen';
 
 $pdo  = gamon_pdo();
 $chk  = $pdo->prepare('SELECT id FROM users WHERE email = ?');

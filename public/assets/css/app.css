@@ -134,8 +134,11 @@ main { padding: 1.5rem 0 3rem; }
 
 /* Responsive */
 @media (max-width: 640px) {
-  .nav-links { display: none; }
+  .nav { flex-wrap: wrap; height: auto; padding: 0.5rem 1rem; }
+  .nav-links { order: 3; flex: 1 1 100%; overflow-x: auto; padding-bottom: 0.5rem; white-space: nowrap; margin-top: 0.5rem; justify-content: flex-start; }
+  .nav-auth { margin-left: auto; }
   .grid-2, .grid-3 { grid-template-columns: 1fr; }
   .report-grid { grid-template-columns: 1fr; }
   .severity-group { flex-wrap: wrap; }
 }
+@media print { .nav, .period-btn, .btn, .site-footer { display: none !important; } body { background: #fff !important; color: #000 !important; } .container { padding: 0 !important; margin: 0 !important; max-width: 100% !important; } .card { border: none !important; box-shadow: none !important; } }
