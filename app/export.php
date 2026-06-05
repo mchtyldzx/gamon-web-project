@@ -7,9 +7,9 @@ function export_csv(array $rows): void {
     header('Content-Type: text/csv');
     header('Content-Disposition: attachment; filename="gamon-reports.csv"');
     $out = fopen('php://output', 'w');
-    fputcsv($out, ['id','status','severity','neighborhood','category','description','reporter','created_at']);
+    fputcsv($out, ['id','status','severity','city','category','description','reporter','created_at']);
     foreach ($rows as $r) {
-        fputcsv($out, [$r['id'],$r['status'],$r['severity'],$r['neighborhood_name'],$r['category_name']??'',$r['description'],$r['reporter_name'],$r['created_at']]);
+        fputcsv($out, [$r['id'],$r['status'],$r['severity'],$r['city_name'],$r['category_name']??'',$r['description'],$r['reporter_name'],$r['created_at']]);
     }
     fclose($out);
     exit;
