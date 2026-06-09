@@ -1,0 +1,99 @@
+<mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900" background="#ffffff" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+    
+    <!-- Title C4 Model -->
+    <mxCell id="title1" value="&lt;h1&gt;C4 Model: GaMon Architecture (Container Diagram)&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+      <mxGeometry x="50" y="20" width="500" height="40" as="geometry" />
+    </mxCell>
+
+    <!-- Actors -->
+    <mxCell id="actor1" value="&lt;b&gt;Citizen&lt;/b&gt;&lt;br&gt;&lt;br&gt;Reports waste accumulation, views map." style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#083F75;fontColor=#ffffff;strokeColor=#06315C;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="50" y="100" width="160" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="actor2" value="&lt;b&gt;Staff / Decision Maker&lt;/b&gt;&lt;br&gt;&lt;br&gt;Updates status, views dashboards, exports data." style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#083F75;fontColor=#ffffff;strokeColor=#06315C;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="50" y="260" width="160" height="100" as="geometry" />
+    </mxCell>
+
+    <!-- Containers -->
+    <mxCell id="spa" value="&lt;b&gt;Single-Page Application&lt;/b&gt;&lt;br&gt;[Container: HTML5/JS/CSS]&lt;br&gt;&lt;br&gt;Provides all GaMon functionality to users via their web browser." style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#1168bd;fontColor=#ffffff;strokeColor=#083F75;" vertex="1" parent="1">
+      <mxGeometry x="300" y="150" width="220" height="150" as="geometry" />
+    </mxCell>
+
+    <mxCell id="api" value="&lt;b&gt;API Application&lt;/b&gt;&lt;br&gt;[Container: PHP 8.2]&lt;br&gt;&lt;br&gt;Provides business logic, auth, and REST endpoints." style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#1168bd;fontColor=#ffffff;strokeColor=#083F75;" vertex="1" parent="1">
+      <mxGeometry x="600" y="150" width="220" height="150" as="geometry" />
+    </mxCell>
+
+    <mxCell id="db" value="&lt;b&gt;Database&lt;/b&gt;&lt;br&gt;[Container: SQLite]&lt;br&gt;&lt;br&gt;Stores users, reports, and audit logs." style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=15;whiteSpace=wrap;html=1;fillColor=#1168bd;fontColor=#ffffff;strokeColor=#083F75;" vertex="1" parent="1">
+      <mxGeometry x="920" y="160" width="120" height="130" as="geometry" />
+    </mxCell>
+
+    <mxCell id="ext" value="&lt;b&gt;Nominatim API&lt;/b&gt;&lt;br&gt;[Software System]&lt;br&gt;&lt;br&gt;Provides geocoding (address to lat/lng) for maps." style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;fontColor=#ffffff;strokeColor=#666666;" vertex="1" parent="1">
+      <mxGeometry x="600" y="380" width="220" height="100" as="geometry" />
+    </mxCell>
+
+    <!-- Edges -->
+    <mxCell id="edge1" value="Visits &amp; Interacts" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor1" target="spa">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="edge2" value="Visits &amp; Interacts" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor2" target="spa">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="edge3" value="Makes API Calls [JSON/HTTPS]" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="spa" target="api">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="edge4" value="Reads/Writes [PDO/SQL]" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="api" target="db">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="edge5" value="Forwards Geocoding [HTTP]" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="api" target="ext">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Title Stages -->
+    <mxCell id="title2" value="&lt;h1&gt;Project Development Stages&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+      <mxGeometry x="50" y="550" width="500" height="40" as="geometry" />
+    </mxCell>
+
+    <!-- Stages -->
+    <mxCell id="s1" value="&lt;b&gt;Stage 1&lt;/b&gt;&lt;br&gt;&lt;br&gt;Requirements Analysis &amp;amp;&lt;br&gt;Frontend UI/UX Mockups&lt;br&gt;(HTML/CSS Layouts)" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+      <mxGeometry x="50" y="620" width="180" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="s2" value="&lt;b&gt;Stage 2&lt;/b&gt;&lt;br&gt;&lt;br&gt;Database Schema (SQLite)&lt;br&gt;&amp;amp; Authentication API&lt;br&gt;(Session, Roles)" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+      <mxGeometry x="270" y="620" width="180" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="s3" value="&lt;b&gt;Stage 3&lt;/b&gt;&lt;br&gt;&lt;br&gt;Core Logic &amp;amp; Map&lt;br&gt;(Submitting Reports,&lt;br&gt;Leaflet.js Integration)" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+      <mxGeometry x="490" y="620" width="180" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="s4" value="&lt;b&gt;Stage 4&lt;/b&gt;&lt;br&gt;&lt;br&gt;Dashboards, Filtering&lt;br&gt;&amp;amp; Data Export&lt;br&gt;(CSV/JSON/HTML/PDF)" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+      <mxGeometry x="710" y="620" width="180" height="100" as="geometry" />
+    </mxCell>
+
+    <mxCell id="s5" value="&lt;b&gt;Stage 5&lt;/b&gt;&lt;br&gt;&lt;br&gt;Security &amp;amp; Polish&lt;br&gt;(CSRF, XSS, UI Enhancements,&lt;br&gt;Scholarly Report)" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+      <mxGeometry x="930" y="620" width="180" height="100" as="geometry" />
+    </mxCell>
+
+    <!-- Stage Arrows -->
+    <mxCell id="edgeS1" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s1" target="s2">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="edgeS2" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s2" target="s3">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="edgeS3" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s3" target="s4">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="edgeS4" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s4" target="s5">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+  </root>
+</mxGraphModel>
