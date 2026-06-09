@@ -47,9 +47,9 @@
     <tr><td>F2</td><td>Submit accumulation reports (location, category, severity)</td><td><code>api/reports.php</code></td></tr>
     <tr><td>F3</td><td>Browse and filter reports</td><td><code>report.html</code>, <code>api/reports.php</code></td></tr>
     <tr><td>F4</td><td>Staff: update report status (open → resolved)</td><td><code>PATCH api/reports.php</code></td></tr>
-    <tr><td>F5</td><td>Statistics dashboard (by period, by category, by neighbourhood)</td><td><code>api/summary.php</code>, <code>dashboard.html</code></td></tr>
+    <tr><td>F5</td><td>Statistics dashboard (by period, by category, by city)</td><td><code>api/summary.php</code>, <code>dashboard.html</code></td></tr>
     <tr><td>F6</td><td>Interactive map of report locations</td><td><code>map.html</code>, Leaflet.js</td></tr>
-    <tr><td>F7</td><td>Export reports as CSV and JSON</td><td><code>api/export.php</code></td></tr>
+    <tr><td>F7</td><td>Export reports as HTML, PDF, CSV and JSON</td><td><code>api/export.php</code>, JS</td></tr>
     <tr><td>F8</td><td>Admin panel: user list, report overview</td><td><code>admin.html</code>, <code>api/admin/</code></td></tr>
     <tr><td>F9</td><td>Geocoding via external REST API</td><td><code>api/geocode.php</code> (Nominatim/cURL)</td></tr>
   </table>
@@ -85,7 +85,7 @@ SQLite            data/gamon.sqlite</pre>
     <tr><th>Table</th><th>Purpose</th></tr>
     <tr><td>users</td><td>Accounts with roles: citizen, staff, decision_maker, admin</td></tr>
     <tr><td>waste_categories</td><td>Household, paper, plastic, glass, metal, organic, hazardous</td></tr>
-    <tr><td>neighborhoods</td><td>Named areas with locality</td></tr>
+    <tr><td>cities</td><td>Named areas with latitude and longitude</td></tr>
     <tr><td>accumulation_reports</td><td>Core entity: location, category, severity, status, lat/lng</td></tr>
     <tr><td>collection_events</td><td>Staff-logged waste collection records</td></tr>
     <tr><td>cleanup_logs</td><td>Audit trail of status changes on reports</td></tr>
@@ -97,7 +97,7 @@ SQLite            data/gamon.sqlite</pre>
   <table>
     <tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr>
     <tr><td>GET</td><td>/api/health.php</td><td>Service health check</td><td>—</td></tr>
-    <tr><td>GET</td><td>/api/meta.php</td><td>Categories + neighbourhoods</td><td>—</td></tr>
+    <tr><td>GET</td><td>/api/meta.php</td><td>Categories + cities</td><td>—</td></tr>
     <tr><td>POST</td><td>/api/auth/register.php</td><td>Create account</td><td>—</td></tr>
     <tr><td>POST</td><td>/api/auth/login.php</td><td>Start session</td><td>—</td></tr>
     <tr><td>POST</td><td>/api/auth/logout.php</td><td>End session</td><td>—</td></tr>
@@ -106,7 +106,7 @@ SQLite            data/gamon.sqlite</pre>
     <tr><td>POST</td><td>/api/reports.php</td><td>Submit report</td><td>citizen+</td></tr>
     <tr><td>PATCH</td><td>/api/reports.php?id=N</td><td>Update status</td><td>staff+</td></tr>
     <tr><td>GET</td><td>/api/summary.php</td><td>Period stats + ranking</td><td>—</td></tr>
-    <tr><td>GET</td><td>/api/export.php?format=csv|json</td><td>Download data</td><td>—</td></tr>
+    <tr><td>GET</td><td>/api/export.php?format=csv|json|html</td><td>Download data</td><td>—</td></tr>
     <tr><td>GET</td><td>/api/geocode.php?q=address</td><td>Geocode via Nominatim</td><td>—</td></tr>
     <tr><td>GET</td><td>/api/admin/stats.php</td><td>Global statistics</td><td>admin</td></tr>
     <tr><td>GET</td><td>/api/admin/users.php</td><td>User list</td><td>admin</td></tr>
@@ -119,7 +119,7 @@ SQLite            data/gamon.sqlite</pre>
     <li><strong>SQL injection:</strong> All queries use PDO prepared statements with bound parameters.</li>
     <li><strong>XSS:</strong> All data inserted into the DOM is escaped via <code>escHtml()</code> (JS) or <code>htmlspecialchars()</code> (PHP).</li>
     <li><strong>Authentication:</strong> Passwords hashed with <code>password_hash(BCRYPT)</code>. Sessions managed server-side.</li>
-    <li><strong>Authorisation:</strong> <code>gamon_require_auth($roles)</code> guards every mutating endpoint.</li>
+    <li><strong>CSRF:</strong> Mutating requests validate <code>X-XSRF-TOKEN</code> mapped to the session.</li>
   </ul>
 </section>
 
