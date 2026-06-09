@@ -1,4 +1,17 @@
 /* auth.js */
+const originalFetch = window.fetch;
+window.fetch = async function() {
+  let [resource, config] = arguments;
+  if (!config) config = {};
+  if (config.method && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(config.method.toUpperCase())) {
+    const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
+    if (match) {
+      config.headers = config.headers || {};
+      config.headers['X-XSRF-TOKEN'] = match[2];
+    }
+  }
+  return originalFetch(resource, config);
+};
 const Auth = (() => {
   let _user = null;
 
