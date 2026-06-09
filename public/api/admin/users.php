@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     $pdo = gamon_pdo();
-    $stmt = $pdo->prepare('UPDATE users SET role = ? WHERE id = ? AND role != \'admin\'');
+    $stmt = $pdo->prepare("UPDATE users SET role = ? WHERE id = ? AND role != 'admin'");
     $stmt->execute([$body['role'], (int)$body['id']]);
     echo json_encode(['success' => true]);
     exit;
