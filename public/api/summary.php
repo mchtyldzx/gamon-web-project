@@ -8,7 +8,8 @@ header('Content-Type: application/json');
 gamon_require_auth(['decision_maker', 'admin']);
 
 $hood_id = !empty($_GET['city_id']) ? (int)$_GET['city_id'] : null;
+$period  = $_GET['period'] ?? 'all';
 
 echo json_encode(
-    isset($_GET['ranking']) ? gamon_ranking() : gamon_summary('all', $hood_id)
+    isset($_GET['ranking']) ? gamon_ranking($period) : gamon_summary($period, $hood_id)
 );
