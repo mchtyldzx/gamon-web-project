@@ -3,15 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="View GaMon accumulation reports on the interactive map." />
   <title>Map — GaMon</title>
   <link rel="stylesheet" href="assets/css/app.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>#map { height: 520px; border: 1px solid var(--border); border-radius: 4px; }</style>
 </head>
 <body>
-  <nav class="nav">
+  <nav class="nav" role="navigation" aria-label="Main navigation">
     <a class="nav-brand" href="index.html">Ga<span>Mon</span></a>
-    <ul class="nav-links" id="nav-links">
+    <ul class="nav-links" id="nav-links" role="list">
       <li><a href="report.html">Reports</a></li>
       <li><a href="map.html" class="active">Map</a></li>
       <li><a href="dashboard.html">Dashboard</a></li>
@@ -31,7 +32,7 @@
     </div>
   </main>
 
-  <footer class="site-footer"><p>GaMon &mdash; Web Technologies 2026</p></footer>
+  <footer class="site-footer"><p>GaMon &mdash; Web Technologies 2026 &bull; <a href="docs/scholarly-report.html">Scholarly Report</a></p></footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="assets/js/auth.js" defer></script>
