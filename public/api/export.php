@@ -11,4 +11,6 @@ if ($user['role'] !== 'decision_maker' && $user['role'] !== 'admin') {
 
 $rows = gamon_reports_list();
 $format = $_GET['format'] ?? 'json';
-$format === 'csv' ? export_csv($rows) : export_json($rows);
+if ($format === 'csv') export_csv($rows);
+elseif ($format === 'html') export_html($rows);
+else export_json($rows);
