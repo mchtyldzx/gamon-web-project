@@ -141,6 +141,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   loadDashboard('all');
 
+  document.querySelectorAll('.period-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.period-btn').forEach(b => {
+        b.classList.remove('btn-primary');
+        b.classList.add('btn-secondary');
+      });
+      e.target.classList.remove('btn-secondary');
+      e.target.classList.add('btn-primary');
+      loadDashboard(e.target.dataset.period);
+    });
+  });
+
   document.getElementById('btn-export-pdf')?.addEventListener('click', exportDashboardPdf);
 
   if (user.role === 'admin') {
