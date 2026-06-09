@@ -8,9 +8,9 @@
   <link rel="stylesheet" href="assets/css/app.css" />
 </head>
 <body>
-  <nav class="nav">
+  <nav class="nav" role="navigation" aria-label="Main navigation">
     <a class="nav-brand" href="index.html">Ga<span>Mon</span></a>
-    <ul class="nav-links" id="nav-links">
+    <ul class="nav-links" id="nav-links" role="list">
       <li><a href="index.html">Home</a></li>
       <li><a href="report.html">Reports</a></li>
       <li><a href="dashboard.html" class="active">Dashboard</a></li>
@@ -23,10 +23,18 @@
 
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;padding:1.5rem 0 1rem">
         <h1 style="font-size:1.4rem;font-weight:700;color:var(--green-d)">Statistics Dashboard</h1>
-        <div style="display:flex;gap:.4rem">
+        <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap">
+          <div style="display:flex;gap:.25rem;margin-right:1rem">
+            <button class="btn btn-sm btn-primary period-btn" data-period="all">All time</button>
+            <button class="btn btn-sm btn-secondary period-btn" data-period="month">Month</button>
+            <button class="btn btn-sm btn-secondary period-btn" data-period="week">Week</button>
+            <button class="btn btn-sm btn-secondary period-btn" data-period="day">Today</button>
+          </div>
+          <div style="display:flex;gap:.4rem">
           <span style="font-size:.75rem;color:var(--muted);margin-right:.25rem">Export:</span>
           <a class="btn btn-sm btn-secondary" href="api/export.php?format=csv">CSV</a>
           <a class="btn btn-sm btn-secondary" href="api/export.php?format=json">JSON</a>
+          <a class="btn btn-sm btn-secondary" href="api/export.php?format=html">HTML</a>
           <button class="btn btn-sm btn-secondary" id="btn-export-pdf">PDF</button>
           <div id="dashboard-import-section" style="display:none;align-items:center;margin-left:.5rem;gap:.4rem">
             <div style="border-left:1px solid var(--border);height:24px;margin-right:.25rem"></div>
@@ -35,6 +43,7 @@
             <label class="btn btn-sm btn-secondary" style="cursor:pointer">JSON <input type="file" accept=".json" id="import-json" hidden></label>
           </div>
         </div>
+      </div>
       </div>
 
       <!-- Stat tiles -->
@@ -80,7 +89,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>GaMon &mdash; Web Technologies 2026</p>
+    <p>GaMon &mdash; Web Technologies 2026 &bull; <a href="docs/scholarly-report.html">Scholarly Report</a></p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
