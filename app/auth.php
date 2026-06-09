@@ -15,7 +15,30 @@ function gamon_session_start(): void
 function gamon_session_user(): ?array
 {
     gamon_session_start();
-    return $_SESSION['user'] ?? null;
+    if (!isset($_SESSION['user'])) {
+        return null;
+    }
+    
+    // Fetch latest user data from DB to ensure role changes are instant
+    $pdo = gamon_pdo();
+    $stmt = $pdo->prepare('SELECT id, email, role, full_name FROM users WHERE id = ?');
+    $stmt->execute([$_SESSION['user']['id']]);
+    $user = $stmt->fetch();
+    
+    if (!$user) {
+        gamon_session_destroy();
+        return null;
+    }
+    
+    // Update session with fresh data
+    $_SESSION['user'] = [
+        'id'        => (int) $user['id'],
+        'email'     => $user['email'],
+        'role'      => $user['role'],
+        'full_name' => $user['full_name'],
+    ];
+    
+    return $_SESSION['user'];
 }
 
 function gamon_require_auth(array $roles = []): array
