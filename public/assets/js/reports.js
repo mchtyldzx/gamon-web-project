@@ -99,9 +99,11 @@ async function loadReports() {
   const nhood  = document.getElementById('filter-city')?.value;
   const cat    = document.getElementById('filter-category')?.value;
   const status = document.getElementById('filter-status')?.value;
+  const period = document.getElementById('filter-date')?.value;
   if (nhood)  params.set('city_id', nhood);
   if (cat)    params.set('category_id', cat);
   if (status) params.set('status', status);
+  if (period) params.set('period', period);
 
   try {
     const [repRes, user] = await Promise.all([
@@ -192,8 +194,9 @@ async function initReportPage() {
   document.getElementById('filter-city')?.addEventListener('change', loadReports);
   document.getElementById('filter-category')?.addEventListener('change', loadReports);
   document.getElementById('filter-status')?.addEventListener('change', loadReports);
+  document.getElementById('filter-date')?.addEventListener('change', loadReports);
   document.getElementById('btn-clear-filters')?.addEventListener('click', () => {
-    ['filter-city','filter-category','filter-status'].forEach(id => {
+    ['filter-city','filter-category','filter-status','filter-date'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
